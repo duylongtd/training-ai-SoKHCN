@@ -183,7 +183,7 @@ ai-taphuan/
 
 ## 📄 License
 
-Tài liệu nội dung © Sở Khoa học và Công nghệ Hà Tĩnh · Lê Việt Tùng.
+Tài liệu nội dung © Sở Khoa học và Công nghệ Hà Tĩnh · Trần Đình Duy Long.
 Mã nguồn website mở để tham khảo và mở rộng.
 
 ---

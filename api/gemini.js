@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Chỉ chấp nhận POST" });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = 'AIzaSyChaaDNZJ5ywOOOWndk2Op0kDccGWSgoOA';
   if (!apiKey) {
     return res.status(503).json({
       error: "Server chưa cấu hình GEMINI_API_KEY",
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     jsonMode = false,
     temperature = 0.5,
     maxTokens = 1200,
-    model = "gemini-2.0-flash",
+    model = "gemini-2.5-flash",
   } = body;
 
   if (!userPrompt || typeof userPrompt !== "string") {

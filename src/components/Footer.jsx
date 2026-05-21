@@ -103,7 +103,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-paper/50">
           <div>
-            © {new Date().getFullYear()} Sở Khoa học và Công nghệ Hà Tĩnh · Lê Việt Tùng
+            © {new Date().getFullYear()} Sở Khoa học và Công nghệ Hà Tĩnh · Trần Đình Duy Long
           </div>
           <div className="flex items-center gap-4">
             <span>Phát triển bởi Phòng CNTT &amp; CĐS</span>

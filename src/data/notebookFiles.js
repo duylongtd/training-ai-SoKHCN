@@ -19,7 +19,7 @@ DÀNH CHO CÁN BỘ XÃ/PHƯỜNG
 =============================
 
 Phòng CNTT & Chuyển đổi số — Sở KH&CN Hà Tĩnh
-Biên soạn: Lê Việt Tùng
+Biên soạn: Trần Đình Duy Long
 
 PHẦN 1. GIỚI THIỆU
 ==================
