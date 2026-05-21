@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Sparkles, Bot, User, Settings, ExternalLink } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { faqData, quickQuestions } from "../data/content";
+import useGeminiKey from "../hooks/useGeminiKey";
 
 // Tìm câu trả lời từ FAQ
 function findAnswer(input) {
@@ -57,15 +58,9 @@ export default function Chatbot({ open, onClose, onOpen }) {
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const { apiKey, saveKey } = useGeminiKey();
   const [showSettings, setShowSettings] = useState(false);
-  const [apiKey, setApiKey] = useState("");
   const scrollRef = useRef(null);
-
-  // Load API key từ localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem("gemini_api_key");
-    if (saved) setApiKey(saved);
-  }, []);
 
   // Auto scroll to bottom
   useEffect(() => {
@@ -75,9 +70,7 @@ export default function Chatbot({ open, onClose, onOpen }) {
   }, [messages, loading]);
 
   const saveApiKey = (key) => {
-    setApiKey(key);
-    if (key) localStorage.setItem("gemini_api_key", key);
-    else localStorage.removeItem("gemini_api_key");
+    saveKey(key);
   };
 
   const handleSend = async (text) => {
