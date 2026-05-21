@@ -1,15 +1,15 @@
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Send, User, Sparkles, ExternalLink, CheckCircle2, X,
-  Settings, Loader2, Zap, ZapOff, AlertCircle, Key,
+  Loader2, Zap, ZapOff, AlertCircle,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { ChatGPTLogo, GeminiLogo } from "../ToolLogos";
 import useGeminiKey, { callGemini } from "../../hooks/useGeminiKey";
 
 // ============================================
-// CHẤM OFFLINE (regex fallback khi chưa có API key)
+// CHẤM OFFLINE (regex fallback nếu server không có key)
 // ============================================
 
 function analyzePromptOffline(prompt) {
@@ -46,7 +46,7 @@ function analyzePromptOffline(prompt) {
 }
 
 // ============================================
-// CHẤM BẰNG GEMINI THẬT
+// CHẤM BẰNG GEMINI THẬT (qua server proxy)
 // ============================================
 
 const GRADER_SYSTEM = `Bạn là giảng viên dạy CÁN BỘ XÃ/PHƯỜNG Việt Nam viết câu lệnh AI (prompt) hiệu quả. Người học vừa gửi 1 câu lệnh — nhiệm vụ của bạn là CHẤM ĐIỂM câu lệnh đó theo CÔNG THỨC 5 THÀNH PHẦN:
@@ -77,13 +77,12 @@ Trả về DUY NHẤT 1 JSON object (không markdown fence, không text khác) t
   "improved": "<gợi ý 1 phiên bản câu lệnh cải tiến nếu chưa đạt 5/5, đầy đủ ngữ cảnh cán bộ xã/phường. Nếu đã 5/5 thì viết: null>"
 }`;
 
-async function gradeWithGemini(apiKey, prompt) {
-  const result = await callGemini(apiKey, GRADER_SYSTEM, prompt, {
+async function gradeWithGemini(prompt) {
+  const result = await callGemini(GRADER_SYSTEM, prompt, {
     jsonMode: true,
     temperature: 0.3,
     maxTokens: 1000,
   });
-  // Validate cấu trúc
   if (typeof result.score !== "number" || !Array.isArray(result.components)) {
     throw new Error("Phản hồi từ Gemini không đúng định dạng");
   }
@@ -103,7 +102,6 @@ const samplePrompts = [
 function ScoreBreakdown({ data }) {
   return (
     <div className="space-y-2.5">
-      {/* Components grid */}
       <div className="grid grid-cols-1 gap-1.5">
         {data.components.map((c, i) => (
           <div
@@ -135,7 +133,6 @@ function ScoreBreakdown({ data }) {
         ))}
       </div>
 
-      {/* Feedback */}
       {data.feedback && (
         <div className="px-3 py-2.5 rounded-xl bg-ink-900 text-paper text-xs leading-relaxed">
           <span className="text-accent-gold font-bold">💬 Nhận xét:</span>{" "}
@@ -143,7 +140,6 @@ function ScoreBreakdown({ data }) {
         </div>
       )}
 
-      {/* Improved version */}
       {data.improved && data.improved !== "null" && (
         <div className="px-3 py-2.5 rounded-xl bg-accent-gold/10 border border-accent-gold/30">
           <div className="text-[10px] font-bold uppercase tracking-widest text-ink-900/65 mb-1.5 flex items-center gap-1">
@@ -159,107 +155,11 @@ function ScoreBreakdown({ data }) {
 }
 
 // ============================================
-// API KEY SETTINGS PANEL
-// ============================================
-
-function ApiKeyPanel({ hasKey, saveKey, onClose }) {
-  const [input, setInput] = useState("");
-  const [error, setError] = useState("");
-
-  const handleSave = () => {
-    const trimmed = input.trim();
-    if (!trimmed) {
-      setError("Hãy dán API key vào ô bên trên");
-      return;
-    }
-    if (!trimmed.startsWith("AIza") || trimmed.length < 30) {
-      setError("API key Gemini thường bắt đầu bằng 'AIza' và dài 39 ký tự");
-      return;
-    }
-    saveKey(trimmed);
-    setInput("");
-    setError("");
-    onClose();
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: -10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      className="border-b border-ink-900/10 bg-ink-900 text-paper px-5 py-4"
-    >
-      <div className="flex items-start gap-2 mb-3">
-        <Key className="w-4 h-4 text-accent-gold mt-0.5 flex-shrink-0" />
-        <div className="flex-1 min-w-0">
-          <div className="vn-heading text-sm">Thiết lập Gemini API key</div>
-          <p className="text-xs text-paper/75 mt-1">
-            Lấy API key MIỄN PHÍ tại{" "}
-            <a
-              href="https://aistudio.google.com/apikey"
-              target="_blank"
-              rel="noreferrer"
-              className="underline text-accent-gold hover:text-accent-gold/80 inline-flex items-center gap-1"
-            >
-              Google AI Studio <ExternalLink className="w-3 h-3" />
-            </a>
-            . Key lưu cục bộ trong máy bạn, không gửi lên đâu khác.
-          </p>
-        </div>
-        <button onClick={onClose} className="text-paper/60 hover:text-paper flex-shrink-0">
-          <X className="w-4 h-4" />
-        </button>
-      </div>
-
-      {hasKey && (
-        <div className="mb-3 px-3 py-2 rounded-lg bg-accent-lime/10 border border-accent-lime/30 text-xs text-paper/90 flex items-center justify-between gap-2">
-          <span className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5 text-accent-lime" />
-            Đã có API key — đang dùng chế độ AI thật
-          </span>
-          <button
-            onClick={() => saveKey("")}
-            className="text-accent-coral hover:underline font-semibold"
-          >
-            Xoá key
-          </button>
-        </div>
-      )}
-
-      <div className="flex gap-2">
-        <input
-          type="password"
-          value={input}
-          onChange={(e) => {
-            setInput(e.target.value);
-            setError("");
-          }}
-          placeholder="Dán API key vào đây (AIza...)"
-          className="flex-1 bg-paper/10 border border-paper/20 rounded-lg px-3 py-2 text-sm text-paper placeholder:text-paper/40 outline-none focus:border-accent-gold font-mono"
-        />
-        <button
-          onClick={handleSave}
-          className="px-4 py-2 rounded-lg bg-accent-gold hover:bg-accent-gold/90 text-ink-900 font-semibold text-sm transition-colors"
-        >
-          Lưu key
-        </button>
-      </div>
-      {error && (
-        <div className="mt-2 text-xs text-accent-coral flex items-center gap-1.5">
-          <AlertCircle className="w-3.5 h-3.5" /> {error}
-        </div>
-      )}
-    </motion.div>
-  );
-}
-
-// ============================================
 // MAIN COMPONENT
 // ============================================
 
 export default function PracticeChat({ onMissionDone, isMissionDone }) {
-  const { apiKey, saveKey, hasKey } = useGeminiKey();
-  const [showSettings, setShowSettings] = useState(false);
+  const { hasKey, checked } = useGeminiKey();
 
   const [messages, setMessages] = useState([
     {
@@ -292,7 +192,7 @@ export default function PracticeChat({ onMissionDone, isMissionDone }) {
 
     try {
       if (hasKey) {
-        result = await gradeWithGemini(apiKey, prompt);
+        result = await gradeWithGemini(prompt);
       } else {
         result = analyzePromptOffline(prompt);
       }
@@ -300,17 +200,14 @@ export default function PracticeChat({ onMissionDone, isMissionDone }) {
       console.error("Grading failed:", e);
       errorMsg = e.message || String(e);
       result = analyzePromptOffline(prompt);
-      result.fallbackReason = "Gemini lỗi, dùng tạm chấm offline";
+      result.fallbackReason = e.serverNotConfigured
+        ? "Server chưa có key, đang chấm offline"
+        : "Lỗi kết nối, dùng tạm chấm offline";
     }
 
     setMessages((prev) => [
       ...prev,
-      {
-        role: "assistant",
-        type: "grade",
-        data: result,
-        errorMsg,
-      },
+      { role: "assistant", type: "grade", data: result, errorMsg },
     ]);
     setLoading(false);
 
@@ -332,26 +229,30 @@ export default function PracticeChat({ onMissionDone, isMissionDone }) {
           <div className="text-[10px] font-bold uppercase tracking-widest text-ink-900/60">
             3 nhiệm vụ
           </div>
-          <button
-            onClick={() => setShowSettings(!showSettings)}
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest transition-colors ${
-              hasKey
+          <div
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${
+              !checked
+                ? "bg-ink-900/5 text-ink-900/40 border border-ink-900/10"
+                : hasKey
                 ? "bg-accent-lime/20 text-ink-700 border border-accent-lime/40"
-                : "bg-ink-900/5 text-ink-900/60 hover:bg-ink-900/10 border border-ink-900/15"
+                : "bg-ink-900/5 text-ink-900/60 border border-ink-900/15"
             }`}
-            title={hasKey ? "Đang dùng AI thật" : "Bấm để thêm API key Gemini"}
+            title={hasKey ? "Server đã cấu hình AI thật" : "Server chưa có key, đang chấm offline"}
           >
-            {hasKey ? (
+            {!checked ? (
               <>
-                <Zap className="w-3 h-3" /> AI thật
+                <Loader2 className="w-3 h-3 animate-spin" /> Đang kết nối...
+              </>
+            ) : hasKey ? (
+              <>
+                <Zap className="w-3 h-3" /> Gemini sẵn sàng
               </>
             ) : (
               <>
                 <ZapOff className="w-3 h-3" /> Chấm offline
               </>
             )}
-            <Settings className="w-3 h-3" />
-          </button>
+          </div>
         </div>
         <div className="grid grid-cols-3 gap-2 text-xs">
           {[
@@ -378,33 +279,6 @@ export default function PracticeChat({ onMissionDone, isMissionDone }) {
           })}
         </div>
       </div>
-
-      {/* Settings panel */}
-      <AnimatePresence>
-        {showSettings && (
-          <ApiKeyPanel
-            hasKey={hasKey}
-            saveKey={saveKey}
-            onClose={() => setShowSettings(false)}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Banner gợi ý thêm API key */}
-      {!hasKey && !showSettings && (
-        <div className="border-b border-accent-gold/30 bg-accent-gold/10 px-5 py-2.5 flex items-center gap-2 text-xs text-ink-900">
-          <Zap className="w-4 h-4 text-accent-gold flex-shrink-0" />
-          <span className="flex-1">
-            Đang chấm bằng <strong>regex offline</strong>. Thêm API key Gemini (miễn phí) để AI thật chấm chi tiết hơn.
-          </span>
-          <button
-            onClick={() => setShowSettings(true)}
-            className="font-bold text-ink-900 hover:underline whitespace-nowrap"
-          >
-            Thêm key →
-          </button>
-        </div>
-      )}
 
       {/* Logo bar */}
       <div className="border-b border-ink-900/10 bg-paper px-5 py-3 flex flex-wrap items-center gap-2 md:gap-3">
@@ -452,7 +326,6 @@ export default function PracticeChat({ onMissionDone, isMissionDone }) {
                   : "bg-cream text-ink-900 rounded-bl-sm border border-ink-900/10"
               }`}
             >
-              {/* Intro / text message */}
               {msg.role === "user" && <div>{msg.content}</div>}
 
               {msg.role === "assistant" && msg.type === "intro" && (
@@ -461,7 +334,6 @@ export default function PracticeChat({ onMissionDone, isMissionDone }) {
                 </div>
               )}
 
-              {/* Grade message */}
               {msg.role === "assistant" && msg.type === "grade" && msg.data && (
                 <>
                   <div className="flex items-center gap-2 mb-3 flex-wrap">
@@ -521,7 +393,6 @@ export default function PracticeChat({ onMissionDone, isMissionDone }) {
           </motion.div>
         ))}
 
-        {/* Loading state */}
         {loading && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}

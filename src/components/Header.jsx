@@ -10,6 +10,36 @@ const navItems = [
   { id: "an-toan", label: "An toàn" },
 ];
 
+// Logo Sở KH&CN Hà Tĩnh — ưu tiên file local /logo-skhcn.png (đặt trong public/),
+// fallback sang URL gốc của Sở, fallback cuối cùng là icon Sparkles.
+const LOGO_LOCAL = "/logo-skhcn.png";
+const LOGO_REMOTE = "https://skhcn.hatinh.gov.vn/img/logo1.png";
+
+function BrandLogo() {
+  // 0 = local, 1 = remote, 2 = sparkles fallback
+  const [stage, setStage] = useState(0);
+
+  if (stage === 2) {
+    return (
+      <div className="relative w-10 h-10 md:w-11 md:h-11 rounded-xl bg-ink-900 flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-ink-900 via-ink-800 to-ink-700" />
+        <Sparkles className="relative w-5 h-5 text-accent-gold" strokeWidth={2.5} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-white border border-ink-900/10 flex items-center justify-center overflow-hidden shadow-sm">
+      <img
+        src={stage === 0 ? LOGO_LOCAL : LOGO_REMOTE}
+        alt="Sở KH&amp;CN Hà Tĩnh"
+        className="w-full h-full object-contain p-1"
+        onError={() => setStage(stage + 1)}
+      />
+    </div>
+  );
+}
+
 export default function Header({ onOpenMindmap }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -37,10 +67,7 @@ export default function Header({ onOpenMindmap }) {
       <div className="container-x flex items-center justify-between h-16 md:h-20">
         {/* Logo */}
         <a href="#top" className="flex items-center gap-3 group">
-          <div className="relative w-10 h-10 md:w-11 md:h-11 rounded-xl bg-ink-900 flex items-center justify-center overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-ink-900 via-ink-800 to-ink-700" />
-            <Sparkles className="relative w-5 h-5 text-accent-gold" strokeWidth={2.5} />
-          </div>
+          <BrandLogo />
           <div className="flex flex-col">
             <span className="vn-heading text-base md:text-lg text-ink-900 leading-none">
               Tập huấn AI

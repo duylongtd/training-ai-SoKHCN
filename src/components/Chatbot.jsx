@@ -16,36 +16,40 @@ function findAnswer(input) {
   return null;
 }
 
-// Gọi Gemini API (nếu user cấu hình API key)
-async function askGemini(apiKey, history, question) {
+// Gọi Gemini qua server proxy /api/gemini — key chỉ ở server
+async function askGemini(history, question) {
   const systemPrompt = `Bạn là trợ lý AI hỗ trợ cán bộ xã/phường Việt Nam học cách sử dụng ChatGPT, Gemini và NotebookLM trong công tác văn phòng. 
 Trả lời ngắn gọn, dễ hiểu, dùng tiếng Việt. 
 Dùng định dạng Markdown: **đậm**, dấu đầu dòng, để câu trả lời dễ đọc.
 Nếu câu hỏi không liên quan đến AI hoặc công tác văn phòng, lịch sự gợi ý quay lại chủ đề.`;
 
-  const contents = [
-    ...history.map((m) => ({
-      role: m.role === "user" ? "user" : "model",
-      parts: [{ text: m.content }],
-    })),
-    { role: "user", parts: [{ text: question }] },
-  ];
+  // Ghép history vào userPrompt vì proxy hiện chỉ nhận single message
+  const historyText = history
+    .filter((m) => m.role === "user" || m.role === "assistant")
+    .map((m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`)
+    .join("\n\n");
+  const fullPrompt = historyText
+    ? `${historyText}\n\nUser: ${question}`
+    : question;
 
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents,
-        systemInstruction: { parts: [{ text: systemPrompt }] },
-        generationConfig: { temperature: 0.7, maxOutputTokens: 800 },
-      }),
-    }
-  );
-  if (!res.ok) throw new Error("API error " + res.status);
-  const data = await res.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || "Xin lỗi, tôi chưa có câu trả lời.";
+  const res = await fetch("/api/gemini", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      systemPrompt,
+      userPrompt: fullPrompt,
+      temperature: 0.7,
+      maxTokens: 800,
+    }),
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const err = new Error(data.error || `Server lỗi ${res.status}`);
+    err.serverNotConfigured = res.status === 503;
+    throw err;
+  }
+  return data.text || "Xin lỗi, tôi chưa có câu trả lời.";
 }
 
 export default function Chatbot({ open, onClose, onOpen }) {
@@ -58,7 +62,7 @@ export default function Chatbot({ open, onClose, onOpen }) {
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const { apiKey, saveKey } = useGeminiKey();
+  const { hasKey, checked } = useGeminiKey();
   const [showSettings, setShowSettings] = useState(false);
   const scrollRef = useRef(null);
 
@@ -68,10 +72,6 @@ export default function Chatbot({ open, onClose, onOpen }) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, loading]);
-
-  const saveApiKey = (key) => {
-    saveKey(key);
-  };
 
   const handleSend = async (text) => {
     const question = (text ?? input).trim();
@@ -83,11 +83,11 @@ export default function Chatbot({ open, onClose, onOpen }) {
     setLoading(true);
 
     try {
-      // Thử Gemini API trước nếu có
+      // Thử Gemini API qua server proxy nếu server có key
       let answer = null;
-      if (apiKey) {
+      if (hasKey) {
         try {
-          answer = await askGemini(apiKey, messages, question);
+          answer = await askGemini(messages, question);
         } catch (e) {
           console.warn("Gemini failed, fallback to FAQ", e);
         }
@@ -97,7 +97,7 @@ export default function Chatbot({ open, onClose, onOpen }) {
       if (!answer) {
         answer = findAnswer(question);
         if (!answer) {
-          answer = `Tôi chưa có câu trả lời sẵn cho câu hỏi này. Bạn có thể:\n\n- Hỏi cụ thể hơn về **AI, ChatGPT, Gemini, NotebookLM**, câu lệnh, ứng dụng văn phòng, an toàn\n- Cuộn trang để xem nội dung chi tiết\n- Bấm **"Lộ trình học"** để xem mind map\n\n*Mẹo: Bạn có thể cấu hình Gemini API Key (miễn phí) ở nút ⚙️ phía trên để có câu trả lời thông minh hơn.*`;
+          answer = `Tôi chưa có câu trả lời sẵn cho câu hỏi này. Bạn có thể:\n\n- Hỏi cụ thể hơn về **AI, ChatGPT, Gemini, NotebookLM**, câu lệnh, ứng dụng văn phòng, an toàn\n- Cuộn trang để xem nội dung chi tiết\n- Bấm **"Lộ trình học"** để xem mind map`;
         }
       }
 
@@ -166,20 +166,15 @@ export default function Chatbot({ open, onClose, onOpen }) {
                 <div>
                   <div className="vn-heading text-base text-paper">Trợ lý AI Tập huấn</div>
                   <div className="text-[11px] text-paper/60">
-                    {apiKey ? "Đang dùng Gemini · Trực tuyến" : "Chế độ FAQ · Cấu hình API để dùng AI"}
+                    {!checked
+                      ? "Đang kết nối..."
+                      : hasKey
+                      ? "Gemini · Trực tuyến"
+                      : "Chế độ FAQ · Server chưa có key"}
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                <button
-                  onClick={() => setShowSettings(!showSettings)}
-                  className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${
-                    showSettings ? "bg-accent-gold text-ink-900" : "bg-paper/10 hover:bg-paper/20 text-paper"
-                  }`}
-                  aria-label="Cài đặt"
-                >
-                  <Settings className="w-4 h-4" />
-                </button>
                 <button
                   onClick={onClose}
                   className="w-9 h-9 rounded-full bg-paper/10 hover:bg-paper/20 flex items-center justify-center transition-colors"
@@ -189,46 +184,6 @@ export default function Chatbot({ open, onClose, onOpen }) {
                 </button>
               </div>
             </div>
-
-            {/* Settings panel */}
-            <AnimatePresence>
-              {showSettings && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="bg-cream border-b border-ink-900/10 overflow-hidden"
-                >
-                  <div className="p-4 space-y-3">
-                    <div>
-                      <label className="text-xs font-bold text-ink-900 uppercase tracking-wider block mb-1.5">
-                        Gemini API Key (tuỳ chọn)
-                      </label>
-                      <p className="text-xs text-ink-900/60 mb-2">
-                        Có API key → chatbot dùng Gemini thật, trả lời thông minh hơn.
-                        Không có → vẫn dùng được với câu trả lời FAQ có sẵn.
-                      </p>
-                      <input
-                        type="password"
-                        value={apiKey}
-                        onChange={(e) => saveApiKey(e.target.value)}
-                        placeholder="AIza..."
-                        className="w-full px-3 py-2 rounded-lg border border-ink-900/15 bg-white text-sm font-mono focus:outline-none focus:border-ink-900"
-                      />
-                    </div>
-                    <a
-                      href="https://aistudio.google.com/apikey"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-900 hover:text-ink-700"
-                    >
-                      Lấy API Key miễn phí tại Google AI Studio
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
 
             {/* Messages */}
             <div

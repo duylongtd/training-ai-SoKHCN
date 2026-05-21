@@ -1,86 +1,92 @@
 import { useState, useEffect } from "react";
 
-const STORAGE_KEY = "gemini_api_key";
-const EVENT_NAME = "gemini-key-change";
+/**
+ * Gọi Gemini qua server proxy /api/gemini.
+ * API key nằm ở biến môi trường GEMINI_API_KEY phía server,
+ * browser KHÔNG bao giờ thấy.
+ */
+export async function callGemini(systemPrompt, userPrompt, opts = {}) {
+  const { jsonMode = false, temperature = 0.5, maxTokens = 1200 } = opts;
+
+  const res = await fetch("/api/gemini", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ systemPrompt, userPrompt, jsonMode, temperature, maxTokens }),
+  });
+
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
+    const err = new Error(data.error || `Server lỗi ${res.status}`);
+    err.status = res.status;
+    err.serverNotConfigured = res.status === 503;
+    err.details = data.details || "";
+    throw err;
+  }
+
+  const text = data.text || "";
+
+  if (jsonMode) {
+    const cleaned = text
+      .replace(/^```(?:json)?\s*/i, "")
+      .replace(/```\s*$/, "")
+      .trim();
+    try {
+      return JSON.parse(cleaned);
+    } catch (e) {
+      throw new Error("JSON không hợp lệ: " + cleaned.slice(0, 200));
+    }
+  }
+
+  return text;
+}
 
 /**
- * Hook quản lý API key của Gemini dùng chung trong cả app.
- * Khi update ở 1 component, các component khác tự đồng bộ qua window event.
+ * Hook check xem server đã cấu hình key chưa.
+ * Lần đầu mount: gọi 1 request thử để biết server có key.
+ * Cache kết quả trong sessionStorage để không gọi lại nhiều lần.
  */
 export default function useGeminiKey() {
-  const [apiKey, setApiKey] = useState(() => {
+  const [hasKey, setHasKey] = useState(() => {
     try {
-      return localStorage.getItem(STORAGE_KEY) || "";
+      const cached = sessionStorage.getItem("ai_server_has_key");
+      return cached === "1";
     } catch {
-      return "";
+      return false;
+    }
+  });
+  const [checked, setChecked] = useState(() => {
+    try {
+      return sessionStorage.getItem("ai_server_has_key") !== null;
+    } catch {
+      return false;
     }
   });
 
   useEffect(() => {
-    const handler = (e) => {
-      setApiKey(e.detail || "");
-    };
-    window.addEventListener(EVENT_NAME, handler);
-    return () => window.removeEventListener(EVENT_NAME, handler);
-  }, []);
-
-  const saveKey = (key) => {
-    const trimmed = (key || "").trim();
-    if (trimmed) localStorage.setItem(STORAGE_KEY, trimmed);
-    else localStorage.removeItem(STORAGE_KEY);
-    setApiKey(trimmed);
-    window.dispatchEvent(new CustomEvent(EVENT_NAME, { detail: trimmed }));
-  };
-
-  return { apiKey, saveKey, hasKey: !!apiKey };
-}
-
-/**
- * Gọi Gemini API trực tiếp.
- * @param {string} apiKey
- * @param {string} systemPrompt - hướng dẫn cho AI
- * @param {string} userPrompt - nội dung user gửi
- * @param {object} opts - { jsonMode, temperature, maxTokens }
- */
-export async function callGemini(apiKey, systemPrompt, userPrompt, opts = {}) {
-  const { jsonMode = false, temperature = 0.5, maxTokens = 1200 } = opts;
-
-  const body = {
-    contents: [{ role: "user", parts: [{ text: userPrompt }] }],
-    systemInstruction: { parts: [{ text: systemPrompt }] },
-    generationConfig: {
-      temperature,
-      maxOutputTokens: maxTokens,
-      ...(jsonMode && { responseMimeType: "application/json" }),
-    },
-  };
-
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-    {
+    if (checked) return;
+    // Health check: gửi request rỗng để xem server có key không
+    fetch("/api/gemini", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    }
-  );
+      body: JSON.stringify({ userPrompt: "ping", maxTokens: 5 }),
+    })
+      .then((r) => {
+        const has = r.status !== 503 && r.status !== 404;
+        setHasKey(has);
+        setChecked(true);
+        try {
+          sessionStorage.setItem("ai_server_has_key", has ? "1" : "0");
+        } catch {}
+      })
+      .catch(() => {
+        setHasKey(false);
+        setChecked(true);
+        try {
+          sessionStorage.setItem("ai_server_has_key", "0");
+        } catch {}
+      });
+  }, [checked]);
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Gemini API ${res.status}: ${text.slice(0, 200)}`);
-  }
-
-  const data = await res.json();
-  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-
-  if (jsonMode) {
-    // Strip markdown fence nếu có
-    const cleaned = raw.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/, "").trim();
-    try {
-      return JSON.parse(cleaned);
-    } catch (e) {
-      throw new Error("Gemini trả về JSON không hợp lệ: " + cleaned.slice(0, 200));
-    }
-  }
-
-  return raw;
+  return { hasKey, checked, apiKey: "server-managed", saveKey: () => {} };
 }
