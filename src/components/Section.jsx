@@ -15,6 +15,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import useProgress from "../hooks/useProgress";
+import { getToolLogo, TOOL_BRAND } from "./ToolLogos";
 
 // Map icon name string -> component
 const IconMap = {
@@ -31,7 +32,7 @@ const IconMap = {
 };
 
 // Render từng loại block
-function Block({ block }) {
+function Block({ block, onOpenTool }) {
   switch (block.type) {
     case "definition":
       return (
@@ -126,35 +127,56 @@ function Block({ block }) {
     case "tools":
       return (
         <div className="grid md:grid-cols-3 gap-4 md:gap-5">
-          {block.items.map((tool, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="card-base p-6 group hover:-translate-y-1"
-            >
-              <div className="flex items-baseline justify-between mb-3">
-                <h4 className="vn-heading text-2xl text-ink-900">{tool.name}</h4>
-                <span className="text-xs font-mono text-ink-900/50">{tool.version}</span>
-              </div>
-              <div className="text-xs text-ink-900/60 uppercase tracking-wider font-medium mb-4">
-                {tool.maker}
-              </div>
-              <p className="text-sm text-ink-900/75 leading-relaxed mb-5">{tool.strength}</p>
-              <div className="pt-4 border-t border-ink-900/10 space-y-2 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-ink-900/55">Miễn phí</span>
-                  <span className="font-medium text-ink-900">{tool.free}</span>
+          {block.items.map((tool, i) => {
+            const Logo = getToolLogo(tool.id);
+            const brand = TOOL_BRAND[tool.id] || {};
+            return (
+              <motion.button
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                onClick={() => onOpenTool && onOpenTool(tool.id)}
+                className="card-base p-6 group hover:-translate-y-1 cursor-pointer text-left relative w-full"
+              >
+                {/* Bong bóng tooltip hiện khi hover */}
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 -translate-y-full bg-ink-900 text-paper text-xs font-semibold px-3 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap shadow-lg">
+                  Ấn để xem chi tiết
+                  <div className="absolute left-1/2 -translate-x-1/2 -bottom-1 w-2 h-2 bg-ink-900 rotate-45" />
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-ink-900/55">Trả phí</span>
-                  <span className="font-medium text-ink-900">{tool.paid}</span>
+
+                <div className="flex items-start justify-between gap-3 mb-4">
+                  <div
+                    className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center flex-shrink-0 ${
+                      brand.bg || "bg-ink-900/5"
+                    }`}
+                  >
+                    {Logo && <Logo className="w-10 h-10 md:w-12 md:h-12" />}
+                  </div>
+                  <span className="text-xs font-mono text-ink-900/50 mt-1">{tool.version}</span>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+
+                <div className="flex items-center gap-2 mb-1">
+                  <h4 className="vn-heading text-2xl text-ink-900">{tool.name}</h4>
+                </div>
+                <div className="text-xs text-ink-900/60 uppercase tracking-wider font-medium mb-4">
+                  {tool.maker}
+                </div>
+                <p className="text-sm text-ink-900/75 leading-relaxed mb-5">{tool.strength}</p>
+                <div className="pt-4 border-t border-ink-900/10 space-y-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-ink-900/55">Miễn phí</span>
+                    <span className="font-medium text-ink-900">{tool.free}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-ink-900/55">Trả phí</span>
+                    <span className="font-medium text-ink-900 text-right">{tool.paid}</span>
+                  </div>
+                </div>
+              </motion.button>
+            );
+          })}
         </div>
       );
 
@@ -492,7 +514,7 @@ function Block({ block }) {
   }
 }
 
-export default function Section({ section, index, onOpenTheory, onOpenPractice }) {
+export default function Section({ section, index, onOpenTheory, onOpenPractice, onOpenTool }) {
   const { isTheoryRead, missionsCompleted } = useProgress();
   const theoryDone = isTheoryRead(section.id);
   // Tổng số mission theo config (mặc định 1 nếu chưa biết)
@@ -638,7 +660,7 @@ export default function Section({ section, index, onOpenTheory, onOpenPractice }
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.5 }}
             >
-              <Block block={block} />
+              <Block block={block} onOpenTool={onOpenTool} />
             </motion.div>
           ))}
         </div>

@@ -77,6 +77,7 @@ export const sections = [
         type: "tools",
         items: [
           {
+            id: "chatgpt",
             name: "ChatGPT",
             maker: "OpenAI",
             version: "GPT-5",
@@ -85,6 +86,7 @@ export const sections = [
             paid: "~500K/tháng (ChatGPT Plus)",
           },
           {
+            id: "gemini",
             name: "Gemini",
             maker: "Google",
             version: "2.5 Pro, 2.5 Flash",
@@ -93,6 +95,7 @@ export const sections = [
             paid: "Pro 500K/tháng, Ultra 5M/tháng",
           },
           {
+            id: "deepseek",
             name: "Deepseek",
             maker: "Cộng đồng mã nguồn mở",
             version: "V3.1",
@@ -433,3 +436,164 @@ export const quickQuestions = [
   "Mẫu câu lệnh soạn báo cáo?",
   "Có an toàn không?",
 ];
+
+// Chi tiết các nền tảng AI — hiển thị trong popup khi bấm vào logo
+export const toolDetails = {
+  chatgpt: {
+    id: "chatgpt",
+    name: "ChatGPT",
+    maker: "OpenAI",
+    version: "GPT-5",
+    url: "https://chat.openai.com",
+    tagline: "Trợ lý AI hàng đầu thế giới",
+    description:
+      "ChatGPT là chatbot AI do OpenAI phát triển, ra mắt cuối năm 2022 và là sản phẩm đột phá đầu tiên đưa AI tạo sinh đến với hàng tỷ người dùng trên toàn cầu. Phiên bản hiện tại GPT-5 vượt trội về giao tiếp tự nhiên, tóm tắt văn bản và hỗ trợ tiếng Việt rất tốt.",
+    strengths: [
+      "Văn phong tự nhiên, gần với cách nói của người Việt",
+      "Tóm tắt văn bản dài (nghị quyết, báo cáo) rất nhanh và chính xác",
+      "Có app trên iOS, Android và máy tính (Windows/Mac)",
+      "Hỗ trợ giọng nói (Voice mode) — nói chuyện như với người thật",
+      "Có thể đọc và phân tích ảnh, file PDF, Excel",
+    ],
+    plans: [
+      {
+        name: "Miễn phí",
+        price: "0 đ",
+        priceNote: "Có giới hạn",
+        features: ["GPT-5 (giới hạn lượt)", "Hỏi đáp cơ bản", "Tải ảnh để phân tích"],
+        highlight: false,
+      },
+      {
+        name: "Plus",
+        price: "~500K",
+        priceNote: "/tháng",
+        features: [
+          "GPT-5 đầy đủ tính năng",
+          "Tạo ảnh không giới hạn",
+          "Voice Mode nâng cao",
+          "Code Interpreter, phân tích dữ liệu",
+        ],
+        highlight: true,
+      },
+      {
+        name: "Pro",
+        price: "~5M",
+        priceNote: "/tháng",
+        features: [
+          "Tất cả tính năng Plus",
+          "Model o1 Pro — suy luận nâng cao",
+          "Không giới hạn lượt hỏi hoàn toàn",
+        ],
+        highlight: false,
+      },
+    ],
+  },
+
+  gemini: {
+    id: "gemini",
+    name: "Gemini",
+    maker: "Google",
+    version: "2.5 Pro / 2.5 Flash",
+    url: "https://gemini.google.com",
+    tagline: "Đa năng — ảnh, video, slide, app",
+    description:
+      "Gemini là chatbot AI của Google, kế thừa từ Bard. Điểm mạnh nhất là tích hợp sâu với hệ sinh thái Google (Drive, Docs, Gmail, YouTube) và khả năng tạo nội dung đa phương tiện như ảnh, video, slide thuyết trình hoàn toàn tự động. Đặc biệt phù hợp cho cán bộ làm công tác truyền thông và soạn thảo văn bản.",
+    strengths: [
+      "Tích hợp Google Workspace (Drive, Docs, Gmail) — dùng được luôn",
+      "Canvas — không gian soạn thảo chuyên nghiệp, xuất ra Google Slides/Word",
+      "Tạo ảnh chất lượng cao (Imagen / Nano Banana)",
+      "Tạo video tuyên truyền tự động (Veo)",
+      "Tạo app nội bộ không cần biết lập trình (Code Canvas)",
+    ],
+    plans: [
+      {
+        name: "Miễn phí",
+        price: "0 đ",
+        priceNote: "Có giới hạn",
+        features: [
+          "Gemini 2.5 Flash",
+          "1500 yêu cầu/ngày",
+          "Tạo ảnh giới hạn số lượng",
+        ],
+        highlight: false,
+      },
+      {
+        name: "AI Pro",
+        price: "~500K",
+        priceNote: "/tháng",
+        features: [
+          "Gemini 2.5 Pro đầy đủ",
+          "Veo — tạo video tuyên truyền",
+          "Canvas + Code Canvas",
+          "2TB Google Drive miễn phí",
+        ],
+        highlight: true,
+      },
+      {
+        name: "AI Ultra",
+        price: "~5M",
+        priceNote: "/tháng",
+        features: [
+          "Tất cả tính năng AI Pro",
+          "Model 2.5 Ultra — mạnh nhất hiện tại",
+          "Deep Research nâng cao",
+          "30TB lưu trữ Google",
+        ],
+        highlight: false,
+      },
+    ],
+  },
+
+  deepseek: {
+    id: "deepseek",
+    name: "Deepseek",
+    maker: "Cộng đồng mã nguồn mở",
+    version: "V3.1",
+    url: "https://chat.deepseek.com",
+    tagline: "Mã nguồn mở — miễn phí, tự host được",
+    description:
+      "Deepseek là một trong những mô hình AI mã nguồn mở mạnh nhất hiện nay, do startup Trung Quốc phát triển. Điểm đặc biệt là mã nguồn được công bố hoàn toàn, có thể tải về tự host trên máy chủ cơ quan để đảm bảo bảo mật tuyệt đối cho dữ liệu nhạy cảm — rất phù hợp với cơ quan nhà nước.",
+    strengths: [
+      "Hoàn toàn MIỄN PHÍ trên trang chat.deepseek.com",
+      "Mã nguồn mở — có thể tự host trên máy chủ riêng của cơ quan",
+      "Khả năng lập luận (reasoning) rất tốt — phù hợp phân tích vấn đề phức tạp",
+      "Hỗ trợ tiếng Việt ở mức khá",
+      "Lựa chọn an toàn nhất khi cần xử lý dữ liệu mật của cơ quan",
+    ],
+    plans: [
+      {
+        name: "Web Chat",
+        price: "0 đ",
+        priceNote: "Miễn phí 100%",
+        features: [
+          "Truy cập chat.deepseek.com",
+          "Không giới hạn lượt hỏi",
+          "Không cần API key, đăng ký nhanh",
+        ],
+        highlight: true,
+      },
+      {
+        name: "API",
+        price: "Theo dùng",
+        priceNote: "Tính theo token",
+        features: [
+          "Tích hợp vào ứng dụng riêng",
+          "Giá thấp hơn OpenAI ~10 lần",
+          "Phù hợp dự án nội bộ nhỏ",
+        ],
+        highlight: false,
+      },
+      {
+        name: "Self-host",
+        price: "Miễn phí",
+        priceNote: "+ chi phí server",
+        features: [
+          "Chạy trên máy chủ riêng của cơ quan",
+          "Toàn quyền kiểm soát dữ liệu",
+          "Phù hợp với dữ liệu mật, tuyệt mật",
+        ],
+        highlight: false,
+      },
+    ],
+  },
+};

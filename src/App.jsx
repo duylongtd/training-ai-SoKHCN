@@ -8,13 +8,18 @@ import PracticeModal from "./components/PracticeModal";
 import Chatbot from "./components/Chatbot";
 import Footer from "./components/Footer";
 import CongratsToast from "./components/CongratsToast";
-import { sections } from "./data/content";
+import ToolDetailModal from "./components/ToolDetailModal";
+import { sections, toolDetails } from "./data/content";
 
 export default function App() {
   const [mindmapOpen, setMindmapOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [theorySection, setTheorySection] = useState(null);
   const [practiceSection, setPracticeSection] = useState(null);
+  const [toolDetailId, setToolDetailId] = useState(null);
+
+  const openTool = useCallback((id) => setToolDetailId(id), []);
+  const closeTool = useCallback(() => setToolDetailId(null), []);
 
   const openTheory = useCallback((section) => {
     setPracticeSection(null);
@@ -57,6 +62,7 @@ export default function App() {
             index={i}
             onOpenTheory={openTheory}
             onOpenPractice={openPractice}
+            onOpenTool={openTool}
           />
         ))}
       </main>
@@ -64,6 +70,12 @@ export default function App() {
 
       {/* Floating modules */}
       <MindmapModal open={mindmapOpen} onClose={() => setMindmapOpen(false)} />
+
+      <ToolDetailModal
+        open={!!toolDetailId}
+        tool={toolDetailId ? toolDetails[toolDetailId] : null}
+        onClose={closeTool}
+      />
 
       <TheoryModal
         open={!!theorySection}

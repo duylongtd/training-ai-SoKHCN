@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Folder,
@@ -16,7 +17,7 @@ import {
 import { folders, downloadAsText } from "../../data/notebookFiles";
 
 function FilePreviewModal({ file, onClose, onDownload }) {
-  return (
+  return createPortal(
     <AnimatePresence>
       {file && (
         <>
@@ -25,13 +26,13 @@ function FilePreviewModal({ file, onClose, onDownload }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-ink-950/70 z-[60]"
+            className="fixed inset-0 bg-ink-950/70 z-[90]"
           />
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="fixed inset-4 md:inset-12 bg-paper rounded-3xl z-[60] flex flex-col overflow-hidden shadow-2xl"
+            className="fixed inset-4 md:inset-12 bg-paper rounded-3xl z-[91] flex flex-col overflow-hidden shadow-2xl"
           >
             <div
               className={`px-5 py-4 flex items-center justify-between border-b ${
@@ -76,7 +77,8 @@ function FilePreviewModal({ file, onClose, onDownload }) {
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
 
@@ -157,10 +159,7 @@ export default function PracticeNotebookLM({ onMissionDone, isMissionDone }) {
             <h3 className="vn-heading text-lg text-ink-900">Video hướng dẫn</h3>
             <span className="text-xs text-ink-900/55">(Tiếng Anh có phụ đề)</span>
           </div>
-          <div
-            className="relative aspect-video rounded-2xl overflow-hidden shadow-xl bg-ink-900"
-            onClick={() => onMissionDone("watch-video", "Đã xem video hướng dẫn")}
-          >
+          <div className="relative aspect-video rounded-2xl overflow-hidden shadow-xl bg-ink-900">
             <iframe
               className="absolute inset-0 w-full h-full"
               src="https://www.youtube.com/embed/1A9o-MalN0k?rel=0"
@@ -169,9 +168,25 @@ export default function PracticeNotebookLM({ onMissionDone, isMissionDone }) {
               allowFullScreen
             />
           </div>
-          <p className="text-xs text-ink-900/55 mt-2 italic">
-            💡 Mẹo: Bấm vào video để đánh dấu "Đã xem". Có thể bật phụ đề tiếng Việt trong YouTube.
-          </p>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mt-3">
+            <p className="text-xs text-ink-900/55 italic">
+              💡 Mẹo: Có thể bật phụ đề tiếng Việt trong cài đặt YouTube. Xem xong bấm nút bên phải để đánh dấu.
+            </p>
+            {isMissionDone("watch-video") ? (
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-lime/20 border border-accent-lime/50 text-ink-700 text-sm font-semibold flex-shrink-0">
+                <CheckCircle2 className="w-4 h-4" />
+                Đã xem video
+              </div>
+            ) : (
+              <button
+                onClick={() => onMissionDone("watch-video", "Đã đánh dấu xem video")}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ink-900 hover:bg-ink-800 text-paper text-sm font-semibold flex-shrink-0 transition-colors"
+              >
+                <CheckCircle2 className="w-4 h-4 text-accent-gold" />
+                Đánh dấu "Đã xem"
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Folder view */}
@@ -315,64 +330,67 @@ export default function PracticeNotebookLM({ onMissionDone, isMissionDone }) {
         onDownload={handleDownload}
       />
 
-      {/* Sensitive warning */}
-      <AnimatePresence>
-        {showSensitiveWarning && pendingFile && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-ink-950/80 z-[70]"
-              onClick={() => setShowSensitiveWarning(false)}
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] w-[92%] max-w-lg bg-paper rounded-3xl p-7 shadow-2xl border-2 border-accent-coral"
-            >
-              <div className="flex items-start gap-4 mb-5">
-                <div className="w-14 h-14 rounded-2xl bg-accent-coral/20 flex items-center justify-center flex-shrink-0">
-                  <ShieldAlert className="w-7 h-7 text-accent-coral" />
-                </div>
-                <div>
-                  <h3 className="vn-heading text-xl text-ink-900 mb-1">⚠ Dừng lại — Tài liệu nhạy cảm!</h3>
-                  <p className="text-xs text-ink-900/60 font-mono">{pendingFile.name}</p>
-                </div>
-              </div>
-              <div className="text-sm text-ink-900/85 leading-relaxed space-y-2 mb-6">
-                <p>Tài liệu này chứa <strong>thông tin nội bộ / dữ liệu cá nhân của công dân</strong>.</p>
-                <p className="font-semibold text-accent-coral">
-                  TUYỆT ĐỐI KHÔNG được nạp lên NotebookLM, ChatGPT, Gemini hay bất kỳ AI công cộng nào.
-                </p>
-                <p>
-                  Lý do: dữ liệu bạn nạp sẽ được lưu trên server Google. Nếu lộ thông tin cá nhân
-                  công dân hoặc tài liệu mật, bạn có thể vi phạm:
-                </p>
-                <ul className="list-disc pl-5 text-xs text-ink-900/75 space-y-1">
-                  <li>Luật Bảo vệ Dữ liệu cá nhân (NĐ 13/2023/NĐ-CP)</li>
-                  <li>Luật An ninh mạng</li>
-                  <li>Quy chế bảo mật của cơ quan</li>
-                </ul>
-              </div>
-              <div className="bg-accent-lime/15 border border-accent-lime/40 rounded-2xl p-4 mb-5 text-sm text-ink-900">
-                ✓ <strong>Tốt!</strong> Bạn đã nhận ra tài liệu nhạy cảm và dừng lại đúng lúc.
-                Đây chính là phản xạ an toàn cần có khi dùng AI.
-              </div>
-              <button
-                onClick={() => {
-                  setShowSensitiveWarning(false);
-                  setPendingFile(null);
-                }}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-ink-900 px-6 py-3 font-semibold text-paper hover:bg-ink-800 transition-colors"
+      {/* Sensitive warning — dùng Portal để escape ra ngoài modal có transform */}
+      {createPortal(
+        <AnimatePresence>
+          {showSensitiveWarning && pendingFile && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-ink-950/80 z-[100]"
+                onClick={() => setShowSensitiveWarning(false)}
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[92%] max-w-lg max-h-[90vh] overflow-y-auto bg-paper rounded-3xl p-6 md:p-7 shadow-2xl border-2 border-accent-coral"
               >
-                Đã hiểu — quay lại
-              </button>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+                <div className="flex items-start gap-4 mb-5">
+                  <div className="w-14 h-14 rounded-2xl bg-accent-coral/20 flex items-center justify-center flex-shrink-0">
+                    <ShieldAlert className="w-7 h-7 text-accent-coral" />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="vn-heading text-xl text-ink-900 mb-1">⚠ Dừng lại — Tài liệu nhạy cảm!</h3>
+                    <p className="text-xs text-ink-900/60 font-mono break-words">{pendingFile.name}</p>
+                  </div>
+                </div>
+                <div className="text-sm text-ink-900/85 leading-relaxed space-y-2 mb-6">
+                  <p>Tài liệu này chứa <strong>thông tin nội bộ / dữ liệu cá nhân của công dân</strong>.</p>
+                  <p className="font-semibold text-accent-coral">
+                    TUYỆT ĐỐI KHÔNG được nạp lên NotebookLM, ChatGPT, Gemini hay bất kỳ AI công cộng nào.
+                  </p>
+                  <p>
+                    Lý do: dữ liệu bạn nạp sẽ được lưu trên server Google. Nếu lộ thông tin cá nhân
+                    công dân hoặc tài liệu mật, bạn có thể vi phạm:
+                  </p>
+                  <ul className="list-disc pl-5 text-xs text-ink-900/75 space-y-1">
+                    <li>Luật Bảo vệ Dữ liệu cá nhân (NĐ 13/2023/NĐ-CP)</li>
+                    <li>Luật An ninh mạng</li>
+                    <li>Quy chế bảo mật của cơ quan</li>
+                  </ul>
+                </div>
+                <div className="bg-accent-lime/15 border border-accent-lime/40 rounded-2xl p-4 mb-5 text-sm text-ink-900">
+                  ✓ <strong>Tốt!</strong> Bạn đã nhận ra tài liệu nhạy cảm và dừng lại đúng lúc.
+                  Đây chính là phản xạ an toàn cần có khi dùng AI.
+                </div>
+                <button
+                  onClick={() => {
+                    setShowSensitiveWarning(false);
+                    setPendingFile(null);
+                  }}
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-ink-900 px-6 py-3 font-semibold text-paper hover:bg-ink-800 transition-colors"
+                >
+                  Đã hiểu — quay lại
+                </button>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 }

@@ -475,7 +475,7 @@ export default function PracticeModal({ open, section, onClose, onGoTheory }) {
                 )}
                 <button
                   onClick={onGoTheory}
-                  className="hidden md:inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-full bg-paper/10 hover:bg-paper/20 transition-colors"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-full bg-paper/10 hover:bg-paper/20 transition-colors"
                 >
                   Đọc lý thuyết
                 </button>
@@ -490,7 +490,7 @@ export default function PracticeModal({ open, section, onClose, onGoTheory }) {
             </div>
 
             {/* Body */}
-            {practiceBody}
+            <div className="flex-1 min-h-0 flex flex-col overflow-hidden">{practiceBody}</div>
           </motion.div>
         </>
       )}
