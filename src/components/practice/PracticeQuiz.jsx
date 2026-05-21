@@ -180,7 +180,7 @@ export default function PracticeQuiz({ questions, onMissionDone, isMissionDone }
             })}
           </div>
 
-          {/* Explanation */}
+          {/* Explanation + Next button */}
           {showFeedback && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -194,24 +194,18 @@ export default function PracticeQuiz({ questions, onMissionDone, isMissionDone }
               <div className="text-xs font-bold uppercase tracking-widest mb-2">
                 {isCorrect ? "🎉 Chính xác!" : "💡 Giải thích"}
               </div>
-              <p className="text-sm text-ink-900/85 leading-relaxed">{cur.explain}</p>
+              <p className="text-sm text-ink-900/85 leading-relaxed mb-4">{cur.explain}</p>
+              <button
+                onClick={handleNext}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-ink-900 px-6 py-3 text-sm font-semibold text-paper hover:bg-ink-800 transition-colors"
+              >
+                {isLast ? "Xem kết quả" : "Câu tiếp theo"}
+                <ChevronRight className="w-4 h-4" />
+              </button>
             </motion.div>
           )}
         </motion.div>
       </div>
-
-      {/* Next button */}
-      {showFeedback && (
-        <div className="border-t border-ink-900/10 p-4 bg-paper flex justify-end">
-          <button
-            onClick={handleNext}
-            className="inline-flex items-center gap-2 rounded-full bg-ink-900 px-6 py-3 text-sm font-semibold text-paper hover:bg-ink-800 transition-colors"
-          >
-            {isLast ? "Xem kết quả" : "Câu tiếp theo"}
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      )}
     </div>
   );
 }

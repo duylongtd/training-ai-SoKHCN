@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Send, Bot, User, Sparkles, ExternalLink, CheckCircle2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { ChatGPTLogo, GeminiLogo } from "../ToolLogos";
 
 // Offline AI: phân tích prompt để chấm điểm theo công thức 5 thành phần
 function analyzePrompt(prompt) {
@@ -133,19 +134,15 @@ export default function PracticeChat({ onMissionDone, isMissionDone }) {
       </div>
 
       {/* Logo bar */}
-      <div className="border-b border-ink-900/10 bg-paper px-5 py-3 flex items-center gap-3">
-        <span className="text-xs text-ink-900/60">Thử ngay trên AI thật:</span>
+      <div className="border-b border-ink-900/10 bg-paper px-5 py-3 flex flex-wrap items-center gap-2 md:gap-3">
+        <span className="text-xs text-ink-900/60 font-medium">Thử ngay trên AI thật →</span>
         <a
           href="https://chat.openai.com"
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-900 px-3 py-1.5 rounded-full bg-white border border-ink-900/15 hover:border-ink-900/40 transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-ink-900 px-3 py-1.5 rounded-full bg-white border border-ink-900/15 hover:border-ink-900/40 hover:bg-emerald-50 transition-colors"
         >
-          <span className="w-4 h-4 rounded-full bg-ink-900 flex items-center justify-center">
-            <svg viewBox="0 0 24 24" className="w-2.5 h-2.5 fill-paper">
-              <path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494z" />
-            </svg>
-          </span>
+          <ChatGPTLogo className="w-4 h-4" />
           ChatGPT
           <ExternalLink className="w-3 h-3 text-ink-900/40" />
         </a>
@@ -153,13 +150,9 @@ export default function PracticeChat({ onMissionDone, isMissionDone }) {
           href="https://gemini.google.com"
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-900 px-3 py-1.5 rounded-full bg-white border border-ink-900/15 hover:border-ink-900/40 transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-ink-900 px-3 py-1.5 rounded-full bg-white border border-ink-900/15 hover:border-ink-900/40 hover:bg-blue-50 transition-colors"
         >
-          <span className="w-4 h-4 rounded-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center">
-            <svg viewBox="0 0 24 24" className="w-2.5 h-2.5 fill-white">
-              <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" />
-            </svg>
-          </span>
+          <GeminiLogo className="w-4 h-4" />
           Gemini
           <ExternalLink className="w-3 h-3 text-ink-900/40" />
         </a>

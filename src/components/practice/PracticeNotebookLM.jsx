@@ -346,45 +346,52 @@ export default function PracticeNotebookLM({ onMissionDone, isMissionDone }) {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[92%] max-w-lg max-h-[90vh] overflow-y-auto bg-paper rounded-3xl p-6 md:p-7 shadow-2xl border-2 border-accent-coral"
+                className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[92%] max-w-lg max-h-[90vh] bg-paper rounded-3xl shadow-2xl border-2 border-accent-coral flex flex-col overflow-hidden"
               >
-                <div className="flex items-start gap-4 mb-5">
-                  <div className="w-14 h-14 rounded-2xl bg-accent-coral/20 flex items-center justify-center flex-shrink-0">
-                    <ShieldAlert className="w-7 h-7 text-accent-coral" />
+                {/* Body scroll */}
+                <div className="overflow-y-auto p-6 md:p-7 flex-1">
+                  <div className="flex items-start gap-4 mb-5">
+                    <div className="w-14 h-14 rounded-2xl bg-accent-coral/20 flex items-center justify-center flex-shrink-0">
+                      <ShieldAlert className="w-7 h-7 text-accent-coral" />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="vn-heading text-xl text-ink-900 mb-1">⚠ Dừng lại — Tài liệu nhạy cảm!</h3>
+                      <p className="text-xs text-ink-900/60 font-mono break-words">{pendingFile.name}</p>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <h3 className="vn-heading text-xl text-ink-900 mb-1">⚠ Dừng lại — Tài liệu nhạy cảm!</h3>
-                    <p className="text-xs text-ink-900/60 font-mono break-words">{pendingFile.name}</p>
+                  <div className="text-sm text-ink-900/85 leading-relaxed space-y-2 mb-5">
+                    <p>Tài liệu này chứa <strong>thông tin nội bộ / dữ liệu cá nhân của công dân</strong>.</p>
+                    <p className="font-semibold text-accent-coral">
+                      TUYỆT ĐỐI KHÔNG được nạp lên NotebookLM, ChatGPT, Gemini hay bất kỳ AI công cộng nào.
+                    </p>
+                    <p>
+                      Lý do: dữ liệu bạn nạp sẽ được lưu trên server Google. Nếu lộ thông tin cá nhân
+                      công dân hoặc tài liệu mật, bạn có thể vi phạm:
+                    </p>
+                    <ul className="list-disc pl-5 text-xs text-ink-900/75 space-y-1">
+                      <li>Luật Bảo vệ Dữ liệu cá nhân (NĐ 13/2023/NĐ-CP)</li>
+                      <li>Luật An ninh mạng</li>
+                      <li>Quy chế bảo mật của cơ quan</li>
+                    </ul>
+                  </div>
+                  <div className="bg-accent-lime/15 border border-accent-lime/40 rounded-2xl p-4 text-sm text-ink-900">
+                    ✓ <strong>Tốt!</strong> Bạn đã nhận ra tài liệu nhạy cảm và dừng lại đúng lúc.
+                    Đây chính là phản xạ an toàn cần có khi dùng AI.
                   </div>
                 </div>
-                <div className="text-sm text-ink-900/85 leading-relaxed space-y-2 mb-6">
-                  <p>Tài liệu này chứa <strong>thông tin nội bộ / dữ liệu cá nhân của công dân</strong>.</p>
-                  <p className="font-semibold text-accent-coral">
-                    TUYỆT ĐỐI KHÔNG được nạp lên NotebookLM, ChatGPT, Gemini hay bất kỳ AI công cộng nào.
-                  </p>
-                  <p>
-                    Lý do: dữ liệu bạn nạp sẽ được lưu trên server Google. Nếu lộ thông tin cá nhân
-                    công dân hoặc tài liệu mật, bạn có thể vi phạm:
-                  </p>
-                  <ul className="list-disc pl-5 text-xs text-ink-900/75 space-y-1">
-                    <li>Luật Bảo vệ Dữ liệu cá nhân (NĐ 13/2023/NĐ-CP)</li>
-                    <li>Luật An ninh mạng</li>
-                    <li>Quy chế bảo mật của cơ quan</li>
-                  </ul>
+
+                {/* Sticky footer — luôn luôn visible */}
+                <div className="border-t border-ink-900/10 bg-paper p-4 flex-shrink-0">
+                  <button
+                    onClick={() => {
+                      setShowSensitiveWarning(false);
+                      setPendingFile(null);
+                    }}
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-ink-900 px-6 py-3 font-semibold text-paper hover:bg-ink-800 transition-colors"
+                  >
+                    Đã hiểu — quay lại
+                  </button>
                 </div>
-                <div className="bg-accent-lime/15 border border-accent-lime/40 rounded-2xl p-4 mb-5 text-sm text-ink-900">
-                  ✓ <strong>Tốt!</strong> Bạn đã nhận ra tài liệu nhạy cảm và dừng lại đúng lúc.
-                  Đây chính là phản xạ an toàn cần có khi dùng AI.
-                </div>
-                <button
-                  onClick={() => {
-                    setShowSensitiveWarning(false);
-                    setPendingFile(null);
-                  }}
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-ink-900 px-6 py-3 font-semibold text-paper hover:bg-ink-800 transition-colors"
-                >
-                  Đã hiểu — quay lại
-                </button>
               </motion.div>
             </>
           )}
