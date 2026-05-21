@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Chỉ chấp nhận POST" });
   }
 
-  const apiKey = 'AIzaSyChaaDNZJ5ywOOOWndk2Op0kDccGWSgoOA';
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return res.status(503).json({
       error: "Server chưa cấu hình GEMINI_API_KEY",
