@@ -26,7 +26,7 @@ export default function Hero({ onOpenMindmap, onOpenChat }) {
         >
           <span className="pill">
             <span className="w-1.5 h-1.5 rounded-full bg-accent-lime animate-pulse" />
-            <span>Phòng CNTT &amp; CĐS · Lê Việt Tùng</span>
+            <span>Phòng CNTT &amp; CĐS · Trần Đình Duy Long</span>
           </span>
         </motion.div>
 

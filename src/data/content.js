@@ -1,5 +1,5 @@
 // Toàn bộ nội dung tập huấn AI cho cán bộ cấp xã
-// Tổng hợp từ tài liệu của Lê Việt Tùng — Sở KH&CN Hà Tĩnh
+// Tổng hợp từ tài liệu của Trần Đình Duy Long — Sở KH&CN Hà Tĩnh
 
 export const sections = [
   {

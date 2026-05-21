@@ -135,7 +135,7 @@ function ScoreBreakdown({ data }) {
 
       {data.feedback && (
         <div className="px-3 py-2.5 rounded-xl bg-ink-900 text-paper text-xs leading-relaxed">
-          <span className="text-accent-gold font-bold">💬 Nhận xét:</span>{" "}
+          <span className="font-bold text-accent-gold">💬 Nhận xét:</span>{" "}
           {data.feedback}
         </div>
       )}
@@ -145,7 +145,7 @@ function ScoreBreakdown({ data }) {
           <div className="text-[10px] font-bold uppercase tracking-widest text-ink-900/65 mb-1.5 flex items-center gap-1">
             <Sparkles className="w-3 h-3" /> Phiên bản cải tiến gợi ý
           </div>
-          <div className="text-xs text-ink-900/85 italic leading-relaxed font-mono">
+          <div className="font-mono text-xs italic leading-relaxed text-ink-900/85">
             "{data.improved}"
           </div>
         </div>
@@ -224,7 +224,7 @@ export default function PracticeChat({ onMissionDone, isMissionDone }) {
   return (
     <div className="flex flex-col h-full">
       {/* Missions tracker */}
-      <div className="border-b border-ink-900/10 bg-cream px-5 py-3">
+      <div className="px-5 py-3 border-b border-ink-900/10 bg-cream">
         <div className="flex items-center justify-between mb-2">
           <div className="text-[10px] font-bold uppercase tracking-widest text-ink-900/60">
             3 nhiệm vụ
@@ -281,8 +281,8 @@ export default function PracticeChat({ onMissionDone, isMissionDone }) {
       </div>
 
       {/* Logo bar */}
-      <div className="border-b border-ink-900/10 bg-paper px-5 py-3 flex flex-wrap items-center gap-2 md:gap-3">
-        <span className="text-xs text-ink-900/60 font-medium">Thử ngay trên AI thật →</span>
+      <div className="flex flex-wrap items-center gap-2 px-5 py-3 border-b border-ink-900/10 bg-paper md:gap-3">
+        <span className="text-xs font-medium text-ink-900/60">Thử ngay trên AI thật →</span>
         <a
           href="https://chat.openai.com"
           target="_blank"
@@ -306,7 +306,7 @@ export default function PracticeChat({ onMissionDone, isMissionDone }) {
       </div>
 
       {/* Messages */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 py-5 space-y-4 bg-paper">
+      <div ref={scrollRef} className="flex-1 px-5 py-5 space-y-4 overflow-y-auto bg-paper">
         {messages.map((msg, i) => (
           <motion.div
             key={i}
@@ -315,7 +315,7 @@ export default function PracticeChat({ onMissionDone, isMissionDone }) {
             className={`flex gap-2.5 ${msg.role === "user" ? "justify-end" : ""}`}
           >
             {msg.role === "assistant" && (
-              <div className="flex-shrink-0 w-9 h-9 rounded-full bg-ink-900 flex items-center justify-center">
+              <div className="flex items-center justify-center flex-shrink-0 rounded-full w-9 h-9 bg-ink-900">
                 <Sparkles className="w-4 h-4 text-accent-gold" />
               </div>
             )}
@@ -336,7 +336,7 @@ export default function PracticeChat({ onMissionDone, isMissionDone }) {
 
               {msg.role === "assistant" && msg.type === "grade" && msg.data && (
                 <>
-                  <div className="flex items-center gap-2 mb-3 flex-wrap">
+                  <div className="flex flex-wrap items-center gap-2 mb-3">
                     <div
                       className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full ${
                         msg.data.score >= 4
@@ -374,7 +374,7 @@ export default function PracticeChat({ onMissionDone, isMissionDone }) {
                   <ScoreBreakdown data={msg.data} />
                   {msg.errorMsg && (
                     <details className="mt-3 text-xs">
-                      <summary className="cursor-pointer text-accent-coral font-semibold">
+                      <summary className="font-semibold cursor-pointer text-accent-coral">
                         Chi tiết lỗi API
                       </summary>
                       <pre className="mt-1 p-2 bg-ink-900/5 rounded-lg overflow-x-auto text-[10px]">
@@ -386,7 +386,7 @@ export default function PracticeChat({ onMissionDone, isMissionDone }) {
               )}
             </div>
             {msg.role === "user" && (
-              <div className="flex-shrink-0 w-9 h-9 rounded-full bg-accent-gold flex items-center justify-center">
+              <div className="flex items-center justify-center flex-shrink-0 rounded-full w-9 h-9 bg-accent-gold">
                 <User className="w-4 h-4 text-ink-900" />
               </div>
             )}
@@ -399,10 +399,10 @@ export default function PracticeChat({ onMissionDone, isMissionDone }) {
             animate={{ opacity: 1, y: 0 }}
             className="flex gap-2.5"
           >
-            <div className="flex-shrink-0 w-9 h-9 rounded-full bg-ink-900 flex items-center justify-center">
+            <div className="flex items-center justify-center flex-shrink-0 rounded-full w-9 h-9 bg-ink-900">
               <Loader2 className="w-4 h-4 text-accent-gold animate-spin" />
             </div>
-            <div className="bg-cream rounded-2xl rounded-bl-sm border border-ink-900/10 px-4 py-3">
+            <div className="px-4 py-3 border rounded-bl-sm bg-cream rounded-2xl border-ink-900/10">
               <div className="flex items-center gap-2 text-xs text-ink-900/65">
                 <span>{hasKey ? "Gemini đang chấm câu lệnh..." : "Đang phân tích..."}</span>
               </div>
@@ -413,7 +413,7 @@ export default function PracticeChat({ onMissionDone, isMissionDone }) {
 
       {/* Sample prompts */}
       {messages.length <= 1 && !loading && (
-        <div className="border-t border-ink-900/5 px-5 py-3 bg-paper">
+        <div className="px-5 py-3 border-t border-ink-900/5 bg-paper">
           <div className="text-[10px] font-bold uppercase tracking-widest text-ink-900/55 mb-2">
             Câu lệnh mẫu để thử
           </div>
@@ -422,7 +422,7 @@ export default function PracticeChat({ onMissionDone, isMissionDone }) {
               <button
                 key={i}
                 onClick={() => handleSend(p)}
-                className="text-left text-xs px-3 py-2 rounded-lg bg-cream hover:bg-accent-gold/15 border border-ink-900/10 text-ink-900/85 transition-colors"
+                className="px-3 py-2 text-xs text-left transition-colors border rounded-lg bg-cream hover:bg-accent-gold/15 border-ink-900/10 text-ink-900/85"
               >
                 <span className="font-mono">"{p}"</span>
               </button>
@@ -432,7 +432,7 @@ export default function PracticeChat({ onMissionDone, isMissionDone }) {
       )}
 
       {/* Input */}
-      <div className="border-t border-ink-900/10 bg-paper p-3">
+      <div className="p-3 border-t border-ink-900/10 bg-paper">
         <div className="flex items-end gap-2 bg-cream rounded-2xl p-1.5 pl-4 border border-ink-900/10 focus-within:border-ink-900/30 transition-colors">
           <textarea
             value={input}
@@ -446,12 +446,12 @@ export default function PracticeChat({ onMissionDone, isMissionDone }) {
             placeholder={hasKey ? "Viết câu lệnh — Gemini sẽ chấm chi tiết..." : "Viết câu lệnh của bạn..."}
             rows={2}
             disabled={loading}
-            className="flex-1 bg-transparent resize-none outline-none text-sm py-2 max-h-32 text-ink-900 placeholder:text-ink-900/40 disabled:opacity-50"
+            className="flex-1 py-2 text-sm bg-transparent outline-none resize-none max-h-32 text-ink-900 placeholder:text-ink-900/40 disabled:opacity-50"
           />
           <button
             onClick={() => handleSend()}
             disabled={!input.trim() || loading}
-            className="w-10 h-10 rounded-full bg-ink-900 hover:bg-ink-800 disabled:bg-ink-900/30 disabled:cursor-not-allowed flex items-center justify-center transition-colors flex-shrink-0"
+            className="flex items-center justify-center flex-shrink-0 w-10 h-10 transition-colors rounded-full bg-ink-900 hover:bg-ink-800 disabled:bg-ink-900/30 disabled:cursor-not-allowed"
           >
             {loading ? (
               <Loader2 className="w-4 h-4 text-accent-gold animate-spin" />

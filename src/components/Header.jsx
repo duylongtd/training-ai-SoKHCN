@@ -21,7 +21,7 @@ function BrandLogo() {
 
   if (stage === 2) {
     return (
-      <div className="relative w-10 h-10 md:w-11 md:h-11 rounded-xl bg-ink-900 flex items-center justify-center overflow-hidden">
+      <div className="relative flex items-center justify-center w-10 h-10 overflow-hidden md:w-11 md:h-11 rounded-xl bg-ink-900">
         <div className="absolute inset-0 bg-gradient-to-br from-ink-900 via-ink-800 to-ink-700" />
         <Sparkles className="relative w-5 h-5 text-accent-gold" strokeWidth={2.5} />
       </div>
@@ -29,14 +29,12 @@ function BrandLogo() {
   }
 
   return (
-    <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-white border border-ink-900/10 flex items-center justify-center overflow-hidden shadow-sm">
       <img
         src={stage === 0 ? LOGO_LOCAL : LOGO_REMOTE}
         alt="Sở KH&amp;CN Hà Tĩnh"
-        className="w-full h-full object-contain p-1"
+        className="object-contain w-12 h-12 p-1"
         onError={() => setStage(stage + 1)}
       />
-    </div>
   );
 }
 
@@ -64,12 +62,12 @@ export default function Header({ onOpenMindmap }) {
           : "bg-transparent"
       }`}
     >
-      <div className="container-x flex items-center justify-between h-16 md:h-20">
+      <div className="flex items-center justify-between h-16 container-x md:h-20">
         {/* Logo */}
         <a href="#top" className="flex items-center gap-3 group">
           <BrandLogo />
           <div className="flex flex-col">
-            <span className="vn-heading text-base md:text-lg text-ink-900 leading-none">
+            <span className="text-base leading-none vn-heading md:text-lg text-ink-900">
               Tập huấn AI
             </span>
             <span className="text-[10px] md:text-[11px] text-ink-900/60 uppercase tracking-widest font-medium">
@@ -79,12 +77,12 @@ export default function Header({ onOpenMindmap }) {
         </a>
 
         {/* Desktop nav */}
-        <nav className="hidden lg:flex items-center gap-1">
+        <nav className="items-center hidden gap-1 lg:flex">
           {navItems.map((item) => (
             <button
               key={item.id}
               onClick={() => scrollTo(item.id)}
-              className="px-4 py-2 text-sm font-medium text-ink-900/80 hover:text-ink-900 hover:bg-ink-900/5 rounded-full transition-colors"
+              className="px-4 py-2 text-sm font-medium transition-colors rounded-full text-ink-900/80 hover:text-ink-900 hover:bg-ink-900/5"
             >
               {item.label}
             </button>
@@ -104,7 +102,7 @@ export default function Header({ onOpenMindmap }) {
 
           <button
             onClick={() => setOpen(!open)}
-            className="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl border border-ink-900/15 bg-white"
+            className="flex items-center justify-center w-10 h-10 bg-white border lg:hidden rounded-xl border-ink-900/15"
             aria-label="Menu"
           >
             {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -119,14 +117,14 @@ export default function Header({ onOpenMindmap }) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden overflow-hidden bg-paper border-t border-ink-900/10"
+            className="overflow-hidden border-t lg:hidden bg-paper border-ink-900/10"
           >
-            <div className="container-x py-4 flex flex-col gap-1">
+            <div className="flex flex-col gap-1 py-4 container-x">
               {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => scrollTo(item.id)}
-                  className="text-left px-4 py-3 text-base font-medium text-ink-900 hover:bg-ink-900/5 rounded-xl transition-colors"
+                  className="px-4 py-3 text-base font-medium text-left transition-colors text-ink-900 hover:bg-ink-900/5 rounded-xl"
                 >
                   {item.label}
                 </button>
@@ -136,7 +134,7 @@ export default function Header({ onOpenMindmap }) {
                   setOpen(false);
                   onOpenMindmap();
                 }}
-                className="mt-2 flex items-center justify-center gap-2 rounded-xl bg-ink-900 px-4 py-3 text-base font-semibold text-paper"
+                className="flex items-center justify-center gap-2 px-4 py-3 mt-2 text-base font-semibold rounded-xl bg-ink-900 text-paper"
               >
                 <Map className="w-5 h-5" />
                 Xem lộ trình học
