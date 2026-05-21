@@ -10,7 +10,11 @@ import {
   Calendar,
   Users,
   FileBarChart,
+  Zap,
+  CheckCircle2,
+  ArrowRight,
 } from "lucide-react";
+import useProgress from "../hooks/useProgress";
 
 // Map icon name string -> component
 const IconMap = {
@@ -488,7 +492,15 @@ function Block({ block }) {
   }
 }
 
-export default function Section({ section, index }) {
+export default function Section({ section, index, onOpenTheory, onOpenPractice }) {
+  const { isTheoryRead, missionsCompleted } = useProgress();
+  const theoryDone = isTheoryRead(section.id);
+  // Tổng số mission theo config (mặc định 1 nếu chưa biết)
+  const { complete: practiceDone, done: missionDone, total: missionTotal } =
+    missionsCompleted(section.id, MISSION_TOTAL[section.id] || 1);
+  const sectionComplete = theoryDone && practiceDone;
+  const interactive = !!onOpenTheory && !!onOpenPractice;
+
   return (
     <section id={section.id} className="py-16 md:py-24 relative">
       <div className="container-x">
@@ -501,8 +513,16 @@ export default function Section({ section, index }) {
               viewport={{ once: true }}
               className="sticky top-28"
             >
-              <div className="display-heading text-7xl md:text-8xl text-accent-gold/40 mb-3 leading-none">
-                {section.no}
+              <div className="flex items-baseline gap-3 mb-3">
+                <div className="display-heading text-7xl md:text-8xl text-accent-gold/40 leading-none">
+                  {section.no}
+                </div>
+                {sectionComplete && interactive && (
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent-lime text-ink-900 text-xs font-bold uppercase tracking-wider">
+                    <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={3} />
+                    Hoàn thành
+                  </div>
+                )}
               </div>
               <div className="text-xs uppercase tracking-widest font-bold text-ink-900/55 mb-3">
                 {section.kicker}
@@ -510,6 +530,89 @@ export default function Section({ section, index }) {
               <h2 className="vn-heading text-3xl md:text-4xl lg:text-5xl text-ink-900 leading-[1.05]">
                 {section.title}
               </h2>
+
+              {/* Action buttons */}
+              {interactive && (
+                <div className="mt-6 flex flex-col gap-2.5">
+                  <button
+                    onClick={() => onOpenTheory(section)}
+                    className={`group flex items-center justify-between gap-3 rounded-2xl border-2 px-4 py-3 transition-all hover:-translate-y-0.5 ${
+                      theoryDone
+                        ? "border-accent-lime/50 bg-accent-lime/10"
+                        : "border-ink-900/15 bg-white hover:border-ink-900/40"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div
+                        className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                          theoryDone ? "bg-accent-lime" : "bg-ink-900/5"
+                        }`}
+                      >
+                        {theoryDone ? (
+                          <CheckCircle2 className="w-4 h-4 text-ink-900" strokeWidth={3} />
+                        ) : (
+                          <BookOpen className="w-4 h-4 text-ink-900" />
+                        )}
+                      </div>
+                      <div className="text-left min-w-0">
+                        <div className="text-xs font-bold uppercase tracking-widest text-ink-900/55">
+                          {theoryDone ? "Đã đọc xong" : "Bước 1"}
+                        </div>
+                        <div className="vn-heading text-sm text-ink-900">Đọc lý thuyết</div>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-ink-900/40 group-hover:text-ink-900 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+                  </button>
+
+                  <button
+                    onClick={() => onOpenPractice(section)}
+                    className={`group flex items-center justify-between gap-3 rounded-2xl border-2 px-4 py-3 transition-all hover:-translate-y-0.5 ${
+                      practiceDone
+                        ? "border-accent-lime/50 bg-accent-lime/10"
+                        : "border-ink-900 bg-ink-900 text-paper hover:bg-ink-800"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div
+                        className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                          practiceDone ? "bg-accent-lime" : "bg-accent-gold"
+                        }`}
+                      >
+                        {practiceDone ? (
+                          <CheckCircle2 className="w-4 h-4 text-ink-900" strokeWidth={3} />
+                        ) : (
+                          <Zap className="w-4 h-4 text-ink-900" fill="currentColor" />
+                        )}
+                      </div>
+                      <div className="text-left min-w-0">
+                        <div
+                          className={`text-xs font-bold uppercase tracking-widest ${
+                            practiceDone ? "text-ink-700" : "text-paper/65"
+                          }`}
+                        >
+                          {practiceDone
+                            ? "Đã hoàn thành"
+                            : missionDone > 0
+                            ? `Đang làm ${missionDone}/${missionTotal}`
+                            : "Bước 2"}
+                        </div>
+                        <div
+                          className={`vn-heading text-sm ${
+                            practiceDone ? "text-ink-900" : "text-paper"
+                          }`}
+                        >
+                          Vào thực hành
+                        </div>
+                      </div>
+                    </div>
+                    <ArrowRight
+                      className={`w-4 h-4 group-hover:translate-x-0.5 transition-all flex-shrink-0 ${
+                        practiceDone ? "text-ink-700" : "text-accent-gold"
+                      }`}
+                    />
+                  </button>
+                </div>
+              )}
             </motion.div>
           </div>
           <div className="lg:col-span-8">
@@ -543,3 +646,17 @@ export default function Section({ section, index }) {
     </section>
   );
 }
+
+// Số mission theo section.id — để Section card hiển thị progress
+const MISSION_TOTAL = {
+  "ai-co-ban": 1,
+  "ao-giac": 1,
+  "cong-cu": 3,
+  "cau-lenh": 3,
+  "ung-dung": 3,
+  "ky-thuat-nang-cao": 1,
+  gemini: 2,
+  notebooklm: 5,
+  "ket-hop": 4,
+  "an-toan": 8,
+};
