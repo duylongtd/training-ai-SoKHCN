@@ -36,6 +36,7 @@ const roadmap = [
       { id: "gemini", label: "Gemini Canvas", desc: "Soạn slide, tạo app, tạo video" },
       { id: "notebooklm", label: "NotebookLM", desc: "Tra cứu chính xác có trích dẫn" },
       { id: "ket-hop", label: "Quy trình kết hợp", desc: "NotebookLM + Gemini = giảm 70% thời gian" },
+      { id: "appsscript", label: "Google Apps Script", desc: "Tự động hóa quy trình làm việc với Google Workspace" },
     ],
   },
   {
@@ -70,7 +71,7 @@ export default function MindmapModal({ open, onClose }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-ink-950/70 backdrop-blur-sm z-50"
+            className="fixed inset-0 z-50 bg-ink-950/70 backdrop-blur-sm"
           />
 
           {/* Modal */}
@@ -79,16 +80,16 @@ export default function MindmapModal({ open, onClose }) {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-2 md:inset-6 lg:inset-10 bg-paper rounded-3xl z-50 overflow-hidden flex flex-col shadow-2xl"
+            className="fixed z-50 flex flex-col overflow-hidden shadow-2xl inset-2 md:inset-6 lg:inset-10 bg-paper rounded-3xl"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-5 md:px-8 py-4 md:py-5 border-b border-ink-900/10 bg-ink-900 text-paper">
+            <div className="flex items-center justify-between px-5 py-4 border-b md:px-8 md:py-5 border-ink-900/10 bg-ink-900 text-paper">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-accent-gold flex items-center justify-center">
+                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-accent-gold">
                   <Sparkles className="w-5 h-5 text-ink-900" />
                 </div>
                 <div>
-                  <h2 className="vn-heading text-lg md:text-2xl text-paper">
+                  <h2 className="text-lg vn-heading md:text-2xl text-paper">
                     Lộ trình học AI cho cán bộ
                   </h2>
                   <p className="text-xs md:text-sm text-paper/60">
@@ -98,7 +99,7 @@ export default function MindmapModal({ open, onClose }) {
               </div>
               <button
                 onClick={onClose}
-                className="w-10 h-10 rounded-full bg-paper/10 hover:bg-paper/20 flex items-center justify-center transition-colors"
+                className="flex items-center justify-center w-10 h-10 transition-colors rounded-full bg-paper/10 hover:bg-paper/20"
                 aria-label="Đóng"
               >
                 <X className="w-5 h-5" />
@@ -106,14 +107,14 @@ export default function MindmapModal({ open, onClose }) {
             </div>
 
             {/* Body */}
-            <div className="flex-1 overflow-y-auto p-5 md:p-8 lg:p-10">
+            <div className="flex-1 p-5 overflow-y-auto md:p-8 lg:p-10">
               <div className="max-w-6xl mx-auto">
                 {/* Intro */}
-                <div className="text-center mb-10">
-                  <div className="display-heading text-4xl md:text-6xl text-ink-900 mb-3">
+                <div className="mb-10 text-center">
+                  <div className="mb-3 text-4xl display-heading md:text-6xl text-ink-900">
                     4 chặng — 4 tuần
                   </div>
-                  <p className="text-ink-900/70 max-w-2xl mx-auto">
+                  <p className="max-w-2xl mx-auto text-ink-900/70">
                     Lộ trình được thiết kế cho cán bộ chưa từng dùng AI. Mỗi chặng
                     xây dựng dựa trên chặng trước. Học xong chặng 1 đã có thể tóm tắt
                     văn bản dài. Học hết 4 chặng có thể thay thế 70% công việc soạn thảo thông thường.
@@ -142,7 +143,7 @@ export default function MindmapModal({ open, onClose }) {
                           <div className="flex-shrink-0">
                             <div className={`w-14 h-14 md:w-[72px] md:h-[72px] rounded-2xl ${phase.color} flex items-center justify-center relative`}>
                               <Icon className="w-6 h-6 md:w-8 md:h-8 text-ink-900" />
-                              <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-ink-900 flex items-center justify-center">
+                              <div className="absolute flex items-center justify-center rounded-full -top-2 -right-2 w-7 h-7 bg-ink-900">
                                 <span className="text-[10px] font-bold text-paper">{phase.phase}</span>
                               </div>
                             </div>
@@ -150,8 +151,8 @@ export default function MindmapModal({ open, onClose }) {
 
                           {/* Phase content */}
                           <div className="flex-1 min-w-0">
-                            <div className="flex flex-wrap items-baseline gap-2 md:gap-3 mb-4">
-                              <h3 className="vn-heading text-2xl md:text-3xl text-ink-900">
+                            <div className="flex flex-wrap items-baseline gap-2 mb-4 md:gap-3">
+                              <h3 className="text-2xl vn-heading md:text-3xl text-ink-900">
                                 {phase.title}
                               </h3>
                               <span className="text-xs font-semibold uppercase tracking-widest text-ink-900/55 px-2.5 py-1 rounded-full border border-ink-900/15 bg-white">
@@ -160,7 +161,7 @@ export default function MindmapModal({ open, onClose }) {
                             </div>
 
                             {/* Nodes */}
-                            <div className="grid sm:grid-cols-2 gap-3">
+                            <div className="grid gap-3 sm:grid-cols-2">
                               {phase.nodes.map((node, ni) => (
                                 <motion.button
                                   key={ni}
@@ -172,14 +173,14 @@ export default function MindmapModal({ open, onClose }) {
                                 >
                                   <div className="flex items-start justify-between gap-3">
                                     <div className="flex-1 min-w-0">
-                                      <h4 className="vn-heading text-base md:text-lg text-ink-900 mb-1">
+                                      <h4 className="mb-1 text-base vn-heading md:text-lg text-ink-900">
                                         {node.label}
                                       </h4>
-                                      <p className="text-xs md:text-sm text-ink-900/65 leading-relaxed">
+                                      <p className="text-xs leading-relaxed md:text-sm text-ink-900/65">
                                         {node.desc}
                                       </p>
                                     </div>
-                                    <ChevronRight className="w-5 h-5 text-ink-900/30 group-hover:text-accent-gold group-hover:translate-x-1 transition-all flex-shrink-0 mt-1" />
+                                    <ChevronRight className="flex-shrink-0 w-5 h-5 mt-1 transition-all text-ink-900/30 group-hover:text-accent-gold group-hover:translate-x-1" />
                                   </div>
                                 </motion.button>
                               ))}
@@ -193,7 +194,7 @@ export default function MindmapModal({ open, onClose }) {
 
                 {/* Footer note */}
                 <div className="mt-12 text-center">
-                  <div className="inline-flex items-center gap-2 text-sm text-ink-900/55 px-4 py-2 rounded-full bg-cream">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 text-sm rounded-full text-ink-900/55 bg-cream">
                     <Sparkles className="w-4 h-4 text-accent-gold" />
                     <span>Mẹo: Có thể nhảy thẳng tới chặng phù hợp với trình độ của bạn</span>
                   </div>

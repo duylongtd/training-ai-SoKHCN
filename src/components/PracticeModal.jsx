@@ -4,6 +4,7 @@ import { X, Zap, Trophy } from "lucide-react";
 import PracticeChat from "./practice/PracticeChat";
 import PracticeQuiz from "./practice/PracticeQuiz";
 import PracticeNotebookLM from "./practice/PracticeNotebookLM";
+import PracticeAppsScript from "./practice/PracticeAppsScript";
 import {
   PracticeTools,
   PracticeUsecases,
@@ -258,6 +259,11 @@ const PRACTICE_CONFIG = {
       "Tôi sẽ chỉ dùng AI là CÔNG CỤ HỖ TRỢ, không thay thế trách nhiệm cá nhân của cán bộ",
     ],
   },
+
+  appsscript: {
+    type: "appsscript",
+    totalMissions: 5,
+  },
 };
 
 export default function PracticeModal({ open, section, onClose, onGoTheory }) {
@@ -311,9 +317,9 @@ export default function PracticeModal({ open, section, onClose, onGoTheory }) {
   let practiceBody = null;
   if (!config) {
     practiceBody = (
-      <div className="flex-1 flex items-center justify-center p-10 text-center">
+      <div className="flex items-center justify-center flex-1 p-10 text-center">
         <div>
-          <Zap className="w-12 h-12 text-ink-900/30 mx-auto mb-4" />
+          <Zap className="w-12 h-12 mx-auto mb-4 text-ink-900/30" />
           <p className="text-ink-900/60">Chưa có phần thực hành cho chuyên đề này.</p>
         </div>
       </div>
@@ -347,8 +353,8 @@ export default function PracticeModal({ open, section, onClose, onGoTheory }) {
         break;
       case "tools-light":
         practiceBody = (
-          <div className="flex-1 overflow-y-auto p-5 md:p-8 bg-paper">
-            <h3 className="vn-heading text-xl text-ink-900 mb-4">
+          <div className="flex-1 p-5 overflow-y-auto md:p-8 bg-paper">
+            <h3 className="mb-4 text-xl vn-heading text-ink-900">
               Truy cập các đường link chính thức
             </h3>
             <div className="space-y-3">
@@ -367,7 +373,7 @@ export default function PracticeModal({ open, section, onClose, onGoTheory }) {
                   >
                     <div className="flex items-center justify-between gap-3">
                       <div>
-                        <div className="vn-heading text-lg text-ink-900 mb-1">
+                        <div className="mb-1 text-lg vn-heading text-ink-900">
                           {item.name}
                         </div>
                         <p className="text-sm text-ink-900/65">{item.desc}</p>
@@ -376,7 +382,7 @@ export default function PracticeModal({ open, section, onClose, onGoTheory }) {
                         {done ? (
                           <Trophy className="w-7 h-7 text-accent-gold" />
                         ) : (
-                          <div className="w-10 h-10 rounded-full bg-ink-900 text-paper flex items-center justify-center">
+                          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-ink-900 text-paper">
                             →
                           </div>
                         )}
@@ -406,6 +412,14 @@ export default function PracticeModal({ open, section, onClose, onGoTheory }) {
           />
         );
         break;
+      case "appsscript":
+        practiceBody = (
+          <PracticeAppsScript
+            onMissionDone={handleMissionDone}
+            isMissionDone={handleIsMissionDone}
+          />
+        );
+        break;
       case "workflow":
         practiceBody = (
           <PracticeWorkflow
@@ -424,6 +438,7 @@ export default function PracticeModal({ open, section, onClose, onGoTheory }) {
           />
         );
         break;
+
       default:
         practiceBody = null;
     }
@@ -442,26 +457,26 @@ export default function PracticeModal({ open, section, onClose, onGoTheory }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-ink-950/70 backdrop-blur-sm z-50"
+            className="fixed inset-0 z-50 bg-ink-950/70 backdrop-blur-sm"
           />
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 30 }}
             transition={{ type: "spring", damping: 25 }}
-            className="fixed inset-2 md:inset-6 lg:inset-10 bg-paper rounded-3xl z-50 overflow-hidden flex flex-col shadow-2xl"
+            className="fixed z-50 flex flex-col overflow-hidden shadow-2xl inset-2 md:inset-6 lg:inset-10 bg-paper rounded-3xl"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 border-b border-ink-900/10 bg-ink-900 text-paper">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-10 h-10 rounded-xl bg-accent-gold flex items-center justify-center flex-shrink-0">
+            <div className="flex items-center justify-between px-4 py-3 border-b md:px-6 md:py-4 border-ink-900/10 bg-ink-900 text-paper">
+              <div className="flex items-center min-w-0 gap-3">
+                <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-xl bg-accent-gold">
                   <Zap className="w-5 h-5 text-ink-900" fill="currentColor" />
                 </div>
                 <div className="min-w-0">
                   <div className="text-[10px] uppercase tracking-widest text-paper/55 font-semibold">
                     Thực hành · Chuyên đề {section.no}
                   </div>
-                  <div className="vn-heading text-sm md:text-lg text-paper truncate">
+                  <div className="text-sm truncate vn-heading md:text-lg text-paper">
                     {section.title}
                   </div>
                 </div>
@@ -481,7 +496,7 @@ export default function PracticeModal({ open, section, onClose, onGoTheory }) {
                 </button>
                 <button
                   onClick={onClose}
-                  className="w-9 h-9 rounded-full bg-paper/10 hover:bg-paper/20 flex items-center justify-center transition-colors"
+                  className="flex items-center justify-center transition-colors rounded-full w-9 h-9 bg-paper/10 hover:bg-paper/20"
                   aria-label="Đóng"
                 >
                   <X className="w-4 h-4" />
@@ -490,7 +505,7 @@ export default function PracticeModal({ open, section, onClose, onGoTheory }) {
             </div>
 
             {/* Body */}
-            <div className="flex-1 min-h-0 flex flex-col overflow-hidden">{practiceBody}</div>
+            <div className="flex flex-col flex-1 min-h-0 overflow-hidden">{practiceBody}</div>
           </motion.div>
         </>
       )}

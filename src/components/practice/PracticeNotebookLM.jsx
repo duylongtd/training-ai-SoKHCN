@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -13,8 +13,71 @@ import {
   Play,
   ShieldAlert,
   Upload,
+  Loader2,
 } from "lucide-react";
 import { folders, downloadAsText } from "../../data/notebookFiles";
+
+// ★ Component render DOCX bằng Mammoth.js
+function DocxViewer({ url }) {
+  const [html, setHtml] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const mammoth = await import("mammoth");
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Không tải được file (${res.status})`);
+        const arrayBuffer = await res.arrayBuffer();
+        const result = await mammoth.convertToHtml({ arrayBuffer });
+        if (!cancelled) {
+          setHtml(result.value);
+          setLoading(false);
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setError(e.message || "Lỗi không xác định");
+          setLoading(false);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [url]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full text-ink-900/60">
+        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+        <span className="text-sm">Đang đọc file Word...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full p-6 text-center">
+        <AlertTriangle className="w-10 h-10 mb-3 text-accent-coral" />
+        <div className="mb-1 text-sm text-ink-900/80">Không hiển thị được file Word</div>
+        <div className="text-xs text-ink-900/55">{error}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="h-full overflow-y-auto bg-white">
+      <div
+        className="max-w-3xl p-6 mx-auto docx-content md:p-10 text-ink-900"
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+    </div>
+  );
+}
 
 function FilePreviewModal({ file, onClose, onDownload }) {
   return createPortal(
@@ -41,14 +104,14 @@ function FilePreviewModal({ file, onClose, onDownload }) {
                   : "bg-cream border-ink-900/10"
               }`}
             >
-              <div className="flex items-center gap-3 min-w-0">
+              <div className="flex items-center min-w-0 gap-3">
                 {file.sensitive ? (
-                  <ShieldAlert className="w-5 h-5 text-accent-coral flex-shrink-0" />
+                  <ShieldAlert className="flex-shrink-0 w-5 h-5 text-accent-coral" />
                 ) : (
-                  <FileText className="w-5 h-5 text-ink-900 flex-shrink-0" />
+                  <FileText className="flex-shrink-0 w-5 h-5 text-ink-900" />
                 )}
                 <div className="min-w-0">
-                  <div className="vn-heading text-sm md:text-base text-ink-900 truncate">
+                  <div className="text-sm truncate vn-heading md:text-base text-ink-900">
                     {file.name}
                   </div>
                   <div className="text-xs text-ink-900/60">{file.size}</div>
@@ -63,16 +126,29 @@ function FilePreviewModal({ file, onClose, onDownload }) {
                 </button>
                 <button
                   onClick={onClose}
-                  className="w-9 h-9 rounded-full bg-ink-900/5 hover:bg-ink-900/10 flex items-center justify-center"
+                  className="flex items-center justify-center rounded-full w-9 h-9 bg-ink-900/5 hover:bg-ink-900/10"
                 >
                   <ArrowLeft className="w-4 h-4 rotate-45" />
                 </button>
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-5 md:p-8 bg-white">
-              <pre className="font-mono text-[13px] md:text-sm text-ink-900 leading-relaxed whitespace-pre-wrap">
-                {file.content}
-              </pre>
+
+            <div className="flex-1 overflow-hidden bg-white">
+              {file.pdfUrl ? (
+                <iframe
+                  src={file.pdfUrl}
+                  title={file.name}
+                  className="w-full h-full border-0"
+                />
+              ) : file.docxUrl ? (
+                <DocxViewer key={file.docxUrl} url={file.docxUrl} />
+              ) : (
+                <div className="h-full p-5 overflow-y-auto md:p-8">
+                  <pre className="font-mono text-[13px] md:text-sm text-ink-900 leading-relaxed whitespace-pre-wrap">
+                    {file.content}
+                  </pre>
+                </div>
+              )}
             </div>
           </motion.div>
         </>
@@ -101,7 +177,16 @@ export default function PracticeNotebookLM({ onMissionDone, isMissionDone }) {
   };
 
   const handleDownload = (file) => {
-    downloadAsText(file.name, file.content);
+    if (file.pdfUrl || file.docxUrl) {
+      const link = document.createElement("a");
+      link.href = file.pdfUrl || file.docxUrl;
+      link.download = file.name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      downloadAsText(file.name, file.content);
+    }
     onMissionDone("download-file", "Đã tải tài liệu về máy");
   };
 
@@ -109,19 +194,16 @@ export default function PracticeNotebookLM({ onMissionDone, isMissionDone }) {
     if (file.sensitive) {
       setPendingFile(file);
       setShowSensitiveWarning(true);
-      // Đây là mission "nhận diện tài liệu nhạy cảm"
       onMissionDone("identify-sensitive", "Tốt! Bạn đã nhận ra tài liệu nhạy cảm cần cẩn trọng");
       return;
     }
-    // Mở NotebookLM
     window.open("https://notebooklm.google.com", "_blank");
     onMissionDone("open-notebooklm", "Đã mở NotebookLM để thực hành");
   };
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      {/* Mission tracker */}
-      <div className="border-b border-ink-900/10 bg-cream px-5 py-3">
+      <div className="px-5 py-3 border-b border-ink-900/10 bg-cream">
         <div className="text-[10px] font-bold uppercase tracking-widest text-ink-900/60 mb-2">
           5 nhiệm vụ
         </div>
@@ -151,15 +233,14 @@ export default function PracticeNotebookLM({ onMissionDone, isMissionDone }) {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-5 md:p-7 bg-paper">
-        {/* Video hướng dẫn */}
+      <div className="flex-1 p-5 overflow-y-auto md:p-7 bg-paper">
         <div className="mb-7">
           <div className="flex items-center gap-2 mb-3">
             <Play className="w-4 h-4 text-accent-coral" />
-            <h3 className="vn-heading text-lg text-ink-900">Video hướng dẫn</h3>
+            <h3 className="text-lg vn-heading text-ink-900">Video hướng dẫn</h3>
             <span className="text-xs text-ink-900/55">(Tiếng Anh có phụ đề)</span>
           </div>
-          <div className="relative aspect-video rounded-2xl overflow-hidden shadow-xl bg-ink-900">
+          <div className="relative overflow-hidden shadow-xl aspect-video rounded-2xl bg-ink-900">
             <iframe
               className="absolute inset-0 w-full h-full"
               src="https://www.youtube.com/embed/1A9o-MalN0k?rel=0"
@@ -168,19 +249,19 @@ export default function PracticeNotebookLM({ onMissionDone, isMissionDone }) {
               allowFullScreen
             />
           </div>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mt-3">
-            <p className="text-xs text-ink-900/55 italic">
+          <div className="flex flex-col items-start justify-between gap-3 mt-3 sm:flex-row sm:items-center">
+            <p className="text-xs italic text-ink-900/55">
               💡 Mẹo: Có thể bật phụ đề tiếng Việt trong cài đặt YouTube. Xem xong bấm nút bên phải để đánh dấu.
             </p>
             {isMissionDone("watch-video") ? (
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-lime/20 border border-accent-lime/50 text-ink-700 text-sm font-semibold flex-shrink-0">
+              <div className="inline-flex items-center flex-shrink-0 gap-2 px-4 py-2 text-sm font-semibold border rounded-full bg-accent-lime/20 border-accent-lime/50 text-ink-700">
                 <CheckCircle2 className="w-4 h-4" />
                 Đã xem video
               </div>
             ) : (
               <button
                 onClick={() => onMissionDone("watch-video", "Đã đánh dấu xem video")}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ink-900 hover:bg-ink-800 text-paper text-sm font-semibold flex-shrink-0 transition-colors"
+                className="inline-flex items-center flex-shrink-0 gap-2 px-4 py-2 text-sm font-semibold transition-colors rounded-full bg-ink-900 hover:bg-ink-800 text-paper"
               >
                 <CheckCircle2 className="w-4 h-4 text-accent-gold" />
                 Đánh dấu "Đã xem"
@@ -189,14 +270,13 @@ export default function PracticeNotebookLM({ onMissionDone, isMissionDone }) {
           </div>
         </div>
 
-        {/* Folder view */}
         {!activeFolder ? (
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="vn-heading text-lg text-ink-900">Kho tài liệu để thực hành</h3>
+              <h3 className="text-lg vn-heading text-ink-900">Kho tài liệu để thực hành</h3>
               <span className="text-xs text-ink-900/55">{folders.length} thư mục</span>
             </div>
-            <div className="grid md:grid-cols-3 gap-3">
+            <div className="grid gap-3 md:grid-cols-3">
               {folders.map((f) => (
                 <button
                   key={f.id}
@@ -214,8 +294,8 @@ export default function PracticeNotebookLM({ onMissionDone, isMissionDone }) {
                       <Folder className="w-6 h-6 text-ink-900" />
                     )}
                   </div>
-                  <div className="vn-heading text-base text-ink-900 mb-1">{f.name}</div>
-                  <p className="text-xs text-ink-900/65 leading-relaxed">{f.desc}</p>
+                  <div className="mb-1 text-base vn-heading text-ink-900">{f.name}</div>
+                  <p className="text-xs leading-relaxed text-ink-900/65">{f.desc}</p>
                   <div className="mt-3 text-[11px] font-bold uppercase tracking-widest text-ink-900/55">
                     {f.files.length} file
                   </div>
@@ -223,10 +303,9 @@ export default function PracticeNotebookLM({ onMissionDone, isMissionDone }) {
               ))}
             </div>
 
-            {/* CTA NotebookLM */}
-            <div className="mt-6 card-base p-5 md:p-6 bg-ink-900 border-ink-900 text-paper flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex flex-col items-start justify-between gap-4 p-5 mt-6 card-base md:p-6 bg-ink-900 border-ink-900 text-paper md:flex-row md:items-center">
               <div>
-                <div className="vn-heading text-lg md:text-xl mb-1">Mở NotebookLM thật</div>
+                <div className="mb-1 text-lg vn-heading md:text-xl">Mở NotebookLM thật</div>
                 <p className="text-sm text-paper/75">
                   Tải file từ thư mục "Tham khảo" về máy → mở NotebookLM → kéo file vào để hỏi đáp thật.
                 </p>
@@ -236,7 +315,7 @@ export default function PracticeNotebookLM({ onMissionDone, isMissionDone }) {
                 target="_blank"
                 rel="noreferrer"
                 onClick={() => onMissionDone("open-notebooklm", "Đã mở NotebookLM!")}
-                className="inline-flex items-center gap-2 rounded-full bg-accent-gold hover:bg-accent-gold/90 px-5 py-3 font-semibold text-ink-900 transition-all flex-shrink-0 whitespace-nowrap"
+                className="inline-flex items-center flex-shrink-0 gap-2 px-5 py-3 font-semibold transition-all rounded-full bg-accent-gold hover:bg-accent-gold/90 text-ink-900 whitespace-nowrap"
               >
                 Mở NotebookLM
                 <ExternalLink className="w-4 h-4" />
@@ -245,10 +324,9 @@ export default function PracticeNotebookLM({ onMissionDone, isMissionDone }) {
           </div>
         ) : (
           <div>
-            {/* Back */}
             <button
               onClick={() => setActiveFolder(null)}
-              className="inline-flex items-center gap-2 text-sm text-ink-900/70 hover:text-ink-900 mb-4"
+              className="inline-flex items-center gap-2 mb-4 text-sm text-ink-900/70 hover:text-ink-900"
             >
               <ArrowLeft className="w-4 h-4" />
               Quay lại các thư mục
@@ -263,13 +341,13 @@ export default function PracticeNotebookLM({ onMissionDone, isMissionDone }) {
                 )}
               </div>
               <div>
-                <h3 className="vn-heading text-xl md:text-2xl text-ink-900">{activeFolder.name}</h3>
-                <p className="text-sm text-ink-900/65 mt-1">{activeFolder.desc}</p>
+                <h3 className="text-xl vn-heading md:text-2xl text-ink-900">{activeFolder.name}</h3>
+                <p className="mt-1 text-sm text-ink-900/65">{activeFolder.desc}</p>
               </div>
             </div>
 
             {activeFolder.sensitive && (
-              <div className="mb-5 p-4 rounded-2xl bg-accent-coral/10 border-2 border-accent-coral/30 flex items-start gap-3">
+              <div className="flex items-start gap-3 p-4 mb-5 border-2 rounded-2xl bg-accent-coral/10 border-accent-coral/30">
                 <AlertTriangle className="w-5 h-5 text-accent-coral flex-shrink-0 mt-0.5" />
                 <div className="text-sm text-ink-900">
                   <strong>Cảnh báo:</strong> Các tài liệu trong thư mục này chứa thông tin nhạy cảm.
@@ -280,15 +358,12 @@ export default function PracticeNotebookLM({ onMissionDone, isMissionDone }) {
 
             <div className="space-y-2">
               {activeFolder.files.map((file) => (
-                <div
-                  key={file.id}
-                  className="card-base p-4 flex flex-col sm:flex-row sm:items-center gap-3"
-                >
+                <div key={file.id} className="flex flex-col gap-3 p-4 card-base sm:flex-row sm:items-center">
                   <FileText
                     className={`w-8 h-8 flex-shrink-0 ${file.sensitive ? "text-accent-coral" : "text-ink-900/70"}`}
                   />
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-ink-900 text-sm truncate">{file.name}</div>
+                    <div className="text-sm font-semibold truncate text-ink-900">{file.name}</div>
                     <div className="text-xs text-ink-900/55">{file.size} · {file.type.toUpperCase()}</div>
                   </div>
                   <div className="flex items-center gap-1.5 flex-wrap">
@@ -323,43 +398,40 @@ export default function PracticeNotebookLM({ onMissionDone, isMissionDone }) {
         )}
       </div>
 
-      {/* File preview modal */}
       <FilePreviewModal
         file={previewFile}
         onClose={() => setPreviewFile(null)}
         onDownload={handleDownload}
       />
 
-      {/* Sensitive warning — dùng Portal để escape ra ngoài modal có transform */}
       {createPortal(
         <AnimatePresence>
           {showSensitiveWarning && pendingFile && (
-            <>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-ink-950/80 z-[100]"
-                onClick={() => setShowSensitiveWarning(false)}
-              />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-ink-950/80 z-[100] flex items-center justify-center p-4 sm:p-6"
+              onClick={() => setShowSensitiveWarning(false)}
+            >
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[92%] max-w-lg max-h-[90vh] bg-paper rounded-3xl shadow-2xl border-2 border-accent-coral flex flex-col overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+                className="flex flex-col w-full max-w-lg max-h-full overflow-hidden border-2 shadow-2xl bg-paper rounded-3xl border-accent-coral"
               >
-                {/* Body scroll */}
-                <div className="overflow-y-auto p-6 md:p-7 flex-1">
+                <div className="flex-1 min-h-0 p-6 overflow-y-auto md:p-7">
                   <div className="flex items-start gap-4 mb-5">
-                    <div className="w-14 h-14 rounded-2xl bg-accent-coral/20 flex items-center justify-center flex-shrink-0">
+                    <div className="flex items-center justify-center flex-shrink-0 w-14 h-14 rounded-2xl bg-accent-coral/20">
                       <ShieldAlert className="w-7 h-7 text-accent-coral" />
                     </div>
                     <div className="min-w-0">
-                      <h3 className="vn-heading text-xl text-ink-900 mb-1">⚠ Dừng lại — Tài liệu nhạy cảm!</h3>
-                      <p className="text-xs text-ink-900/60 font-mono break-words">{pendingFile.name}</p>
+                      <h3 className="mb-1 text-xl vn-heading text-ink-900">⚠ Dừng lại — Tài liệu nhạy cảm!</h3>
+                      <p className="font-mono text-xs break-words text-ink-900/60">{pendingFile.name}</p>
                     </div>
                   </div>
-                  <div className="text-sm text-ink-900/85 leading-relaxed space-y-2 mb-5">
+                  <div className="mb-5 space-y-2 text-sm leading-relaxed text-ink-900/85">
                     <p>Tài liệu này chứa <strong>thông tin nội bộ / dữ liệu cá nhân của công dân</strong>.</p>
                     <p className="font-semibold text-accent-coral">
                       TUYỆT ĐỐI KHÔNG được nạp lên NotebookLM, ChatGPT, Gemini hay bất kỳ AI công cộng nào.
@@ -368,32 +440,31 @@ export default function PracticeNotebookLM({ onMissionDone, isMissionDone }) {
                       Lý do: dữ liệu bạn nạp sẽ được lưu trên server Google. Nếu lộ thông tin cá nhân
                       công dân hoặc tài liệu mật, bạn có thể vi phạm:
                     </p>
-                    <ul className="list-disc pl-5 text-xs text-ink-900/75 space-y-1">
+                    <ul className="pl-5 space-y-1 text-xs list-disc text-ink-900/75">
                       <li>Luật Bảo vệ Dữ liệu cá nhân (NĐ 13/2023/NĐ-CP)</li>
                       <li>Luật An ninh mạng</li>
                       <li>Quy chế bảo mật của cơ quan</li>
                     </ul>
                   </div>
-                  <div className="bg-accent-lime/15 border border-accent-lime/40 rounded-2xl p-4 text-sm text-ink-900">
+                  <div className="p-4 text-sm border bg-accent-lime/15 border-accent-lime/40 rounded-2xl text-ink-900">
                     ✓ <strong>Tốt!</strong> Bạn đã nhận ra tài liệu nhạy cảm và dừng lại đúng lúc.
                     Đây chính là phản xạ an toàn cần có khi dùng AI.
                   </div>
                 </div>
 
-                {/* Sticky footer — luôn luôn visible */}
-                <div className="border-t border-ink-900/10 bg-paper p-4 flex-shrink-0">
+                <div className="flex-shrink-0 p-4 border-t border-ink-900/10 bg-paper">
                   <button
                     onClick={() => {
                       setShowSensitiveWarning(false);
                       setPendingFile(null);
                     }}
-                    className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-ink-900 px-6 py-3 font-semibold text-paper hover:bg-ink-800 transition-colors"
+                    className="inline-flex items-center justify-center w-full gap-2 px-6 py-3 font-semibold transition-colors rounded-full bg-ink-900 text-paper hover:bg-ink-800"
                   >
                     Đã hiểu — quay lại
                   </button>
                 </div>
               </motion.div>
-            </>
+            </motion.div>
           )}
         </AnimatePresence>,
         document.body

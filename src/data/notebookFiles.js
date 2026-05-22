@@ -1,5 +1,6 @@
 // Dữ liệu các file giả lập trong NotebookLM Practice
 // Người dùng sẽ "tải" các file này về máy như tài liệu thực
+// File thật (PDF/DOCX) nằm trong public/, được Vite serve qua URL gốc
 
 export const folders = [
   {
@@ -11,73 +12,11 @@ export const folders = [
       {
         id: "hd-notebooklm",
         name: "Cẩm nang NotebookLM cho cán bộ xã.pdf",
-        size: "1.2 MB",
+        size: "1.1 MB",
         type: "pdf",
         sensitive: false,
-        content: `CẨM NANG SỬ DỤNG NOTEBOOKLM
-DÀNH CHO CÁN BỘ XÃ/PHƯỜNG
-=============================
-
-Phòng CNTT & Chuyển đổi số — Sở KH&CN Hà Tĩnh
-Biên soạn: Trần Đình Duy Long
-
-PHẦN 1. GIỚI THIỆU
-==================
-NotebookLM là công cụ AI miễn phí của Google, chuyên dùng để
-nghiên cứu, tra cứu, tổng hợp tài liệu. Khác với ChatGPT/Gemini:
-NotebookLM CHỈ trả lời dựa trên tài liệu bạn nạp vào, KÈM TRÍCH DẪN.
-
-→ Truy cập: https://notebooklm.google.com
-→ Đăng nhập bằng tài khoản Google (gmail) của cơ quan.
-
-PHẦN 2. CÁC BƯỚC SỬ DỤNG
-========================
-
-Bước 1: Tạo Notebook mới
-  - Bấm nút "Create new" hoặc "Tạo mới"
-  - Đặt tên notebook (ví dụ: "Luật Đất đai 2024")
-
-Bước 2: Nạp tài liệu (Sources)
-  - Bấm "+ Add source" ở cột bên trái
-  - Hỗ trợ: PDF, Word, Google Docs, link web, YouTube, file ghi âm
-  - Tối đa 50 nguồn / notebook, tổng 500.000 từ
-
-Bước 3: Đặt câu hỏi (Chat)
-  - Gõ câu hỏi vào ô chính giữa
-  - Câu trả lời sẽ có số trích dẫn [1] [2] [3]
-  - Bấm vào số → nhảy tới đoạn gốc trong tài liệu
-
-Bước 4: Tạo sản phẩm (Studio)
-  - Audio Overview: tạo podcast 5-10 phút
-  - Mind Map: vẽ sơ đồ tư duy
-  - Briefing Doc: báo cáo tóm tắt 1 trang
-  - Slide Deck: bản trình bày tự động
-
-PHẦN 3. LƯU Ý AN TOÀN
-=====================
-- KHÔNG nạp tài liệu MẬT, TUYỆT MẬT của cơ quan
-- KHÔNG nạp thông tin cá nhân của công dân
-- Tài liệu lưu trên server Google, có thể truy cập từ tài khoản
-- Luôn KIỂM TRA câu trả lời với nguồn gốc trước khi sử dụng
-
-PHẦN 4. CÂU LỆNH MẪU
-====================
-
-Mẫu 1 — Tra cứu pháp lý:
-  "Dựa trên các tài liệu đã nạp, người dân cần chuẩn bị
-  giấy tờ gì để làm thủ tục cấp đổi sổ đỏ? Trích rõ điều, khoản."
-
-Mẫu 2 — Tóm tắt cho lãnh đạo:
-  "Tạo bản tóm tắt 1 trang A4 cho Chủ tịch UBND xã,
-  nêu 3 điểm mới quan trọng nhất và đề xuất 2 câu hỏi
-  cần thảo luận tại cuộc họp huyện."
-
-Mẫu 3 — Tổng hợp ý kiến cử tri:
-  "Phân loại các ý kiến trong biên bản thành 3 nhóm:
-  giao thông, an ninh, môi trường. Đánh dấu các ý kiến
-  lặp lại từ 3 cử tri trở lên là 'cấp bách'."
-
-—HẾT—`,
+        pdfUrl: "/huong-dan-notebooklm.pdf",
+        content: null,
       },
     ],
   },
@@ -90,9 +29,10 @@ Mẫu 3 — Tổng hợp ý kiến cử tri:
       {
         id: "ke-hoach-ntmm",
         name: "Kế hoạch xây dựng Nông thôn mới kiểu mẫu 2026.docx",
-        size: "85 KB",
+        size: "11 KB",
         type: "docx",
         sensitive: false,
+        docxUrl: "/Ke-hoach-xay-dung-Nong-thon-moi-kieu-mau-2026.docx",
         content: `UBND XÃ ĐẠI VIỆT                          CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM
 Số: 142/KH-UBND                            Độc lập – Tự do – Hạnh phúc
 
@@ -163,9 +103,10 @@ tiến độ; quý báo cáo Đảng uỷ, HĐND; năm sơ kết, tổng kết.
       {
         id: "bao-cao-cchc",
         name: "Báo cáo công tác CCHC quý III năm 2026.docx",
-        size: "62 KB",
+        size: "11 KB",
         type: "docx",
         sensitive: false,
+        docxUrl: "/Bao-cao-cong-tac-CCHC-quy-III-2026.docx",
         content: `UBND XÃ ĐẠI VIỆT                          CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM
 Số: 287/BC-UBND                            Độc lập – Tự do – Hạnh phúc
 
@@ -206,9 +147,10 @@ III. PHƯƠNG HƯỚNG QUÝ IV
       {
         id: "tham-luan",
         name: "Bài tham luận hội thảo Chuyển đổi số.docx",
-        size: "45 KB",
+        size: "10 KB",
         type: "docx",
         sensitive: false,
+        docxUrl: "/Bai-tham-luan-hoi-thao-Chuyen-doi-so.docx",
         content: `THAM LUẬN
 "Vai trò của AI trong nâng cao hiệu quả công tác văn phòng cấp xã"
 
@@ -262,9 +204,10 @@ Xin cảm ơn các đồng chí đã lắng nghe!`,
       {
         id: "danh-sach-ho-ngheo",
         name: "[MẬT] Danh sách hộ nghèo có hoàn cảnh đặc biệt 2026.docx",
-        size: "32 KB",
+        size: "11 KB",
         type: "docx",
         sensitive: true,
+        docxUrl: "/MAT-Danh-sach-ho-ngheo-hoan-canh-dac-biet-2026.docx",
         content: `⚠ TÀI LIỆU MẬT — KHÔNG SAO CHÉP, PHÁT TÁN ⚠
 
 UBND XÃ ĐẠI VIỆT
@@ -306,9 +249,10 @@ và Luật An ninh mạng hiện hành.
       {
         id: "ngan-sach-nb",
         name: "[NỘI BỘ] Dự toán ngân sách nhạy cảm Q4-2026.docx",
-        size: "28 KB",
+        size: "11 KB",
         type: "docx",
         sensitive: true,
+        docxUrl: "/NOI-BO-Du-toan-ngan-sach-nhay-cam-Q4-2026.docx",
         content: `⚠ TÀI LIỆU NỘI BỘ — KHÔNG PHỔ BIẾN ⚠
 
 UBND XÃ ĐẠI VIỆT
@@ -355,7 +299,7 @@ File này chứa:
   },
 ];
 
-// Helper download
+// Helper download — chỉ dùng làm fallback khi file không có pdfUrl/docxUrl
 export function downloadAsText(filename, content) {
   const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
   const url = URL.createObjectURL(blob);

@@ -29,7 +29,7 @@ export const sections = [
       {
         type: "principle",
         title: "Nguyên lý hoạt động",
-        body: "AI được \"học\" từ một lượng dữ liệu khổng lồ để nhận biết các mẫu, quy tắc và tri thức. Khi nhận được câu lệnh (prompt), AI sẽ phân tích, suy luận rồi tạo ra câu trả lời dựa trên những gì đã học.",
+        body: 'AI được "học" từ một lượng dữ liệu khổng lồ để nhận biết các mẫu, quy tắc và tri thức. Khi nhận được câu lệnh (prompt), AI sẽ phân tích, suy luận rồi tạo ra câu trả lời dựa trên những gì đã học.',
       },
     ],
   },
@@ -51,7 +51,8 @@ export const sections = [
         title: "Ví dụ minh hoạ",
         question: "Nguyễn Du có từng nhận giải Nobel Văn học không?",
         wrong: "Có, ông nhận Nobel vì Truyện Kiều.",
-        truth: "Không thể — Nguyễn Du mất năm 1820, giải Nobel bắt đầu từ 1901. Đến nay chưa có nhà văn Việt Nam nào nhận Nobel Văn học.",
+        truth:
+          "Không thể — Nguyễn Du mất năm 1820, giải Nobel bắt đầu từ 1901. Đến nay chưa có nhà văn Việt Nam nào nhận Nobel Văn học.",
       },
       {
         type: "list",
@@ -60,7 +61,7 @@ export const sections = [
           "Quá trình học chưa đủ tốt trên một số chủ đề chuyên sâu",
           "Người dùng đặt câu hỏi mơ hồ, thiếu ngữ cảnh",
           "Kiến thức của AI có thể đã lỗi thời, chưa cập nhật",
-          "AI cố \"nối vần\" để câu trả lời nghe có vẻ logic",
+          'AI cố "nối vần" để câu trả lời nghe có vẻ logic',
         ],
       },
     ],
@@ -90,7 +91,8 @@ export const sections = [
             name: "Gemini",
             maker: "Google",
             version: "2.5 Pro, 2.5 Flash",
-            strength: "Tích hợp hệ sinh thái Google, đa phương thức mạnh, tạo video & app",
+            strength:
+              "Tích hợp hệ sinh thái Google, đa phương thức mạnh, tạo video & app",
             free: "Có — giới hạn dung lượng",
             paid: "Pro 500K/tháng, Ultra 5M/tháng",
           },
@@ -119,11 +121,23 @@ export const sections = [
         type: "formula",
         title: "Công thức 5 thành phần",
         items: [
-          { key: "Vai trò", desc: "AI cần \"nhập vai\" gì? Ví dụ: chuyên viên văn phòng, nhà nghiên cứu chính sách…" },
-          { key: "Yêu cầu", desc: "Việc cụ thể cần AI làm là gì? Tóm tắt? Soạn? Phân tích?" },
+          {
+            key: "Vai trò",
+            desc: 'AI cần "nhập vai" gì? Ví dụ: chuyên viên văn phòng, nhà nghiên cứu chính sách…',
+          },
+          {
+            key: "Yêu cầu",
+            desc: "Việc cụ thể cần AI làm là gì? Tóm tắt? Soạn? Phân tích?",
+          },
           { key: "Mục tiêu", desc: "Kết quả cuối cùng phục vụ điều gì?" },
-          { key: "Bối cảnh", desc: "Đối tượng đọc là ai? Tình huống ra sao? Có ràng buộc nào?" },
-          { key: "Dữ liệu đầu vào", desc: "Đính kèm tài liệu, số liệu, ví dụ mẫu nếu có" },
+          {
+            key: "Bối cảnh",
+            desc: "Đối tượng đọc là ai? Tình huống ra sao? Có ràng buộc nào?",
+          },
+          {
+            key: "Dữ liệu đầu vào",
+            desc: "Đính kèm tài liệu, số liệu, ví dụ mẫu nếu có",
+          },
         ],
       },
       {
@@ -149,31 +163,36 @@ export const sections = [
             icon: "FileText",
             title: "Phân tích & tóm tắt tài liệu",
             desc: "Tóm tắt nghị quyết, báo cáo, công văn dài hàng chục trang thành điểm chính trong 1 phút.",
-            sample: "Tóm tắt nội dung chính của Nghị quyết 57 của Bộ Chính trị. Nêu bật 3 nhiệm vụ trọng tâm, các mốc thời gian quan trọng, và những số liệu chính được đề cập.",
+            sample:
+              "Tóm tắt nội dung chính của Nghị quyết 57 của Bộ Chính trị. Nêu bật 3 nhiệm vụ trọng tâm, các mốc thời gian quan trọng, và những số liệu chính được đề cập.",
           },
           {
             icon: "Search",
             title: "Nghiên cứu & tham mưu",
             desc: "Khảo sát tình hình, phân tích số liệu, đề xuất giải pháp cho lãnh đạo.",
-            sample: "Phân tích thực trạng giải quyết hồ sơ hành chính trực tuyến tại phường trong 6 tháng qua. Nhận diện nguyên nhân khiến tỷ lệ người dân sử dụng dịch vụ công trực tuyến còn thấp. Đề xuất giải pháp khả thi.",
+            sample:
+              "Phân tích thực trạng giải quyết hồ sơ hành chính trực tuyến tại phường trong 6 tháng qua. Nhận diện nguyên nhân khiến tỷ lệ người dân sử dụng dịch vụ công trực tuyến còn thấp. Đề xuất giải pháp khả thi.",
           },
           {
             icon: "Calendar",
             title: "Xây dựng kế hoạch",
             desc: "Lập kế hoạch công tác theo tuần/tháng, phân công nhiệm vụ rõ ràng.",
-            sample: "Soạn kế hoạch công tác tháng 11 của Chi bộ Xã Đại Nam, gồm: tổ chức sinh hoạt chuyên đề về Nghị quyết 57; triển khai thi đua chào mừng 80 năm Quốc khánh 2/9. Sắp xếp theo tuần và nêu dự kiến kết quả.",
+            sample:
+              "Soạn kế hoạch công tác tháng 11 của Chi bộ Xã Đại Nam, gồm: tổ chức sinh hoạt chuyên đề về Nghị quyết 57; triển khai thi đua chào mừng 80 năm Quốc khánh 2/9. Sắp xếp theo tuần và nêu dự kiến kết quả.",
           },
           {
             icon: "Users",
             title: "Tổng hợp ý kiến",
             desc: "Hệ thống hoá ý kiến cử tri, biên bản họp thành báo cáo gọn gàng.",
-            sample: "Tổng hợp 15 ý kiến cử tri về việc xây dựng nhà văn hoá. Phân thành 2 nhóm: (1) đóng góp kinh phí, (2) thiết kế và vị trí. Tóm tắt kiến nghị chính của mỗi nhóm.",
+            sample:
+              "Tổng hợp 15 ý kiến cử tri về việc xây dựng nhà văn hoá. Phân thành 2 nhóm: (1) đóng góp kinh phí, (2) thiết kế và vị trí. Tóm tắt kiến nghị chính của mỗi nhóm.",
           },
           {
             icon: "FileBarChart",
             title: "Xây dựng báo cáo",
             desc: "Soạn báo cáo tổng kết, sơ kết theo văn phong hành chính chuẩn.",
-            sample: "Soạn báo cáo tổng kết công tác kiểm tra giám sát năm 2024 của Chi bộ. Gồm: (I) Đánh giá chung, (II) Bài học kinh nghiệm, (III) Phương hướng năm 2025. Văn phong báo cáo Đảng.",
+            sample:
+              "Soạn báo cáo tổng kết công tác kiểm tra giám sát năm 2024 của Chi bộ. Gồm: (I) Đánh giá chung, (II) Bài học kinh nghiệm, (III) Phương hướng năm 2025. Văn phong báo cáo Đảng.",
           },
         ],
       },
@@ -185,7 +204,7 @@ export const sections = [
     title: "Kỹ thuật nâng cao chất lượng câu trả lời",
     kicker: "Cấp độ chuyên sâu",
     summary:
-      "Khi câu trả lời của AI chưa đủ tốt, hãy áp dụng 4 kỹ thuật chuyên nghiệp này để \"điều khiển\" AI làm việc chính xác hơn.",
+      'Khi câu trả lời của AI chưa đủ tốt, hãy áp dụng 4 kỹ thuật chuyên nghiệp này để "điều khiển" AI làm việc chính xác hơn.',
     blocks: [
       {
         type: "techniques",
@@ -193,22 +212,26 @@ export const sections = [
           {
             name: "Cung cấp ví dụ",
             desc: "Đính kèm một mẫu báo cáo đã chuẩn cho AI tham khảo trước khi yêu cầu soạn báo cáo mới.",
-            sample: "Dưới đây là mẫu báo cáo rà soát hộ nghèo năm 2023 đã được phê duyệt. Dựa theo cấu trúc và văn phong này, hãy soạn báo cáo rà soát năm 2024 với số liệu mới sau...",
+            sample:
+              "Dưới đây là mẫu báo cáo rà soát hộ nghèo năm 2023 đã được phê duyệt. Dựa theo cấu trúc và văn phong này, hãy soạn báo cáo rà soát năm 2024 với số liệu mới sau...",
           },
           {
             name: "Hướng dẫn từng bước",
             desc: "Yêu cầu AI suy nghĩ theo từng bước, tránh trả lời ẩu khi xử lý vấn đề phức tạp.",
-            sample: "Hãy thực hiện theo các bước: (1) Đọc và tóm tắt bài viết, (2) Liệt kê các giải pháp, (3) Phân loại theo nhóm, (4) Trình bày dưới dạng bảng 3 cột.",
+            sample:
+              "Hãy thực hiện theo các bước: (1) Đọc và tóm tắt bài viết, (2) Liệt kê các giải pháp, (3) Phân loại theo nhóm, (4) Trình bày dưới dạng bảng 3 cột.",
           },
           {
             name: "Phân tích đa chiều",
             desc: "Yêu cầu AI cho nhiều góc nhìn khác nhau cùng một vấn đề để có đánh giá toàn diện.",
-            sample: "Hãy phân tích Nghị quyết 57 theo 3 góc nhìn: (a) chiến lược quốc gia, (b) cơ chế thể chế, (c) tác động đến cán bộ địa phương.",
+            sample:
+              "Hãy phân tích Nghị quyết 57 theo 3 góc nhìn: (a) chiến lược quốc gia, (b) cơ chế thể chế, (c) tác động đến cán bộ địa phương.",
           },
           {
             name: "Lùi lại nhìn tổng thể",
             desc: "Trước khi đi vào chi tiết, yêu cầu AI làm rõ các khái niệm và nguyên lý cơ bản.",
-            sample: "Trước khi tham mưu giải pháp nâng cao chất lượng sinh hoạt Chi bộ, hãy trả lời: (1) Mục đích cốt lõi của sinh hoạt Chi bộ là gì? (2) Yếu tố nào quyết định chất lượng? (3) Thách thức lớn nhất hiện nay?",
+            sample:
+              "Trước khi tham mưu giải pháp nâng cao chất lượng sinh hoạt Chi bộ, hãy trả lời: (1) Mục đích cốt lõi của sinh hoạt Chi bộ là gì? (2) Yếu tố nào quyết định chất lượng? (3) Thách thức lớn nhất hiện nay?",
           },
         ],
       },
@@ -256,7 +279,7 @@ export const sections = [
       {
         type: "highlight",
         title: "Điểm khác biệt vượt trội",
-        body: "NotebookLM \"khoá\" mình trong các tài liệu bạn cung cấp — không bịa thông tin từ internet. Mỗi câu trả lời đều có số trích dẫn [1] [2] [3] chỉ thẳng đến đoạn văn gốc trong tài liệu của bạn.",
+        body: 'NotebookLM "khoá" mình trong các tài liệu bạn cung cấp — không bịa thông tin từ internet. Mỗi câu trả lời đều có số trích dẫn [1] [2] [3] chỉ thẳng đến đoạn văn gốc trong tài liệu của bạn.',
       },
       {
         type: "panels",
@@ -294,7 +317,7 @@ export const sections = [
     title: "Quy trình kết hợp Gemini + NotebookLM",
     kicker: "Workflow thông minh",
     summary:
-      "Sức mạnh thực sự đến khi kết hợp cả hai: NotebookLM lo phần \"đọc hiểu chính xác\", Gemini lo phần \"sáng tạo và soạn thảo\". Giảm 70% thời gian xử lý văn bản.",
+      'Sức mạnh thực sự đến khi kết hợp cả hai: NotebookLM lo phần "đọc hiểu chính xác", Gemini lo phần "sáng tạo và soạn thảo". Giảm 70% thời gian xử lý văn bản.',
     blocks: [
       {
         type: "workflow",
@@ -324,8 +347,61 @@ export const sections = [
     ],
   },
   {
-    id: "an-toan",
+    id: "appsscript",
     no: "10",
+    title: "Apps Script + AI — Tự động hoá hệ sinh thái Google",
+    kicker: "Tự động hoá",
+    summary:
+      "Dùng AI viết code tự động hoá Gmail, Sheets, Drive, Calendar. Ví dụ thực tế: gửi email lương hàng loạt cho cán bộ chỉ với 1 lệnh chạy — tiết kiệm 90% thời gian.",
+    blocks: [
+      {
+        type: "definition",
+        title: "Google Apps Script là gì?",
+        body: "Google Apps Script là ngôn ngữ lập trình miễn phí của Google, cho phép tự động hoá mọi việc trong hệ sinh thái Google: Gmail, Sheets, Drive, Calendar, Docs, Forms. Trước đây phải biết lập trình mới dùng được. Bây giờ chỉ cần biết hỏi AI (Gemini, Claude, ChatGPT) — AI sẽ viết code cho bạn, bạn chỉ việc copy/paste vào script.google.com và bấm Run.",
+      },
+      {
+        type: "list",
+        title: "Vì sao cán bộ nên biết Apps Script?",
+        items: [
+          "Việc lặp lại nhàm chán (gửi email hàng loạt, sao chép báo cáo, đổi tên file) đều có thể tự động hoá",
+          "Tiết kiệm 50-80% thời gian các công việc văn phòng",
+          "Không cần cài phần mềm — chạy trên trình duyệt",
+          "Tích hợp đầy đủ với Gmail, Sheets, Calendar, Drive, Docs, Forms",
+          "Có thể lên lịch chạy tự động — không cần mở máy hàng ngày",
+        ],
+      },
+      {
+        type: "principle",
+        title: "Quy trình 3 bước với AI",
+        body: "Bước 1 — Mô tả việc muốn làm bằng tiếng Việt cho AI (ví dụ: 'Gửi email lương cho tất cả nhân viên trong Sheets'). Bước 2 — Copy code AI tạo ra vào trình soạn Apps Script tại script.google.com. Bước 3 — Bấm Run, cấp quyền lần đầu, sau đó dùng mãi mãi và có thể lên lịch chạy tự động.",
+      },
+      {
+        type: "example",
+        title: "Tình huống thực tế: Gửi email lương hàng loạt",
+        question:
+          "Phòng Kế toán cần gửi 50 email lương cho cán bộ, mỗi email có thông tin riêng (họ tên, chức vụ, số tiền). Làm thế nào để không mất 1-2 tiếng copy/paste thủ công?",
+        wrong:
+          "Mở Gmail → đánh máy/copy 50 lần → gửi từng email một (mất 1-2 giờ, rất dễ sai sót).",
+        truth:
+          "Hỏi Gemini/Claude viết code Apps Script đọc danh sách từ Google Sheets → tự động gửi email cá nhân hoá cho từng người. Mất 30 giây thiết lập, 10 giây chạy. Sang tab 'Thực hành' để xem prompt mẫu hỏi Gemini, code demo do AI tạo ra, và Google Sheets template anh có thể copy về Drive thực hành ngay.",
+      },
+      {
+        type: "usecases-light",
+        title: "Apps Script tương tác với những gì?",
+        items: [
+          "Gmail — gửi/đọc email tự động, lập lịch nhắc nhở, lọc thư theo từ khoá",
+          "Sheets — đọc/ghi dữ liệu bảng tính, tự động tính toán, tạo báo cáo",
+          "Drive — tạo/sao chép/sắp xếp file, đổi quyền truy cập, chia sẻ tự động",
+          "Docs — tạo văn bản từ template + dữ liệu, ghép thư hàng loạt (mail merge)",
+          "Calendar — tạo/sửa/xoá sự kiện lịch, nhắc nhở qua email tự động",
+          "Forms — đọc phản hồi Form, gửi email xác nhận tự động khi có đăng ký",
+        ],
+      },
+    ],
+  },
+  {
+    id: "an-toan",
+    no: "11",
     title: "Pháp lý & An toàn khi dùng AI",
     kicker: "Bắt buộc tuân thủ",
     summary:
@@ -335,8 +411,16 @@ export const sections = [
         type: "law",
         title: "Luật Trí tuệ nhân tạo Việt Nam",
         items: [
-          { label: "Luật số", value: "134/2025/QH15", note: "Hiệu lực 01/03/2026" },
-          { label: "Nghị định", value: "142/2026/NĐ-CP", note: "Hiệu lực 01/05/2026" },
+          {
+            label: "Luật số",
+            value: "134/2025/QH15",
+            note: "Hiệu lực 01/03/2026",
+          },
+          {
+            label: "Nghị định",
+            value: "142/2026/NĐ-CP",
+            note: "Hiệu lực 01/05/2026",
+          },
         ],
         body: "Mục tiêu: kiến tạo hệ sinh thái AI an toàn, minh bạch, lấy con người làm trung tâm và không cản trở đổi mới sáng tạo.",
       },
@@ -405,12 +489,12 @@ export const faqData = [
   {
     keywords: ["báo cáo", "soạn báo", "viết báo"],
     answer:
-      "**Mẫu câu lệnh soạn báo cáo:**\n\n*\"Đóng vai chuyên viên văn phòng UBND xã. Soạn báo cáo tổng kết công tác [...] năm 2024 gồm 3 phần: (I) Đánh giá chung, (II) Bài học kinh nghiệm, (III) Phương hướng năm 2025. Văn phong báo cáo hành chính. Dữ liệu: [đính kèm số liệu]\"*\n\n**Mẹo:** Đính kèm mẫu báo cáo cũ đã chuẩn để AI bắt chước văn phong.",
+      '**Mẫu câu lệnh soạn báo cáo:**\n\n*"Đóng vai chuyên viên văn phòng UBND xã. Soạn báo cáo tổng kết công tác [...] năm 2024 gồm 3 phần: (I) Đánh giá chung, (II) Bài học kinh nghiệm, (III) Phương hướng năm 2025. Văn phong báo cáo hành chính. Dữ liệu: [đính kèm số liệu]"*\n\n**Mẹo:** Đính kèm mẫu báo cáo cũ đã chuẩn để AI bắt chước văn phong.',
   },
   {
     keywords: ["tóm tắt", "tom tat", "nghị quyết", "tài liệu"],
     answer:
-      "**Mẫu câu lệnh tóm tắt:**\n\n*\"Tóm tắt nội dung chính của [tên tài liệu]. Nêu bật: (1) 3 nhiệm vụ trọng tâm, (2) các mốc thời gian quan trọng, (3) những số liệu chính. Đối tượng đọc: cán bộ cơ quan Đảng địa phương. Trình bày: gạch đầu dòng, mỗi ý không quá 2 câu.\"*\n\n**Mẹo:** Với văn bản dài, dùng **NotebookLM** sẽ chính xác hơn vì có trích dẫn.",
+      '**Mẫu câu lệnh tóm tắt:**\n\n*"Tóm tắt nội dung chính của [tên tài liệu]. Nêu bật: (1) 3 nhiệm vụ trọng tâm, (2) các mốc thời gian quan trọng, (3) những số liệu chính. Đối tượng đọc: cán bộ cơ quan Đảng địa phương. Trình bày: gạch đầu dòng, mỗi ý không quá 2 câu."*\n\n**Mẹo:** Với văn bản dài, dùng **NotebookLM** sẽ chính xác hơn vì có trích dẫn.',
   },
   {
     keywords: ["an toàn", "bảo mật", "rủi ro", "pháp lý", "luật"],
@@ -425,7 +509,7 @@ export const faqData = [
   {
     keywords: ["bắt đầu", "học từ đâu", "mới dùng", "newbie"],
     answer:
-      "**Lộ trình 4 bước cho người mới:**\n\n1. **Tuần 1:** Hiểu AI là gì, cảnh giác về ảo giác\n2. **Tuần 2:** Học viết câu lệnh theo công thức 5 thành phần\n3. **Tuần 3:** Áp dụng vào 5 việc thường gặp (tóm tắt, báo cáo, kế hoạch...)\n4. **Tuần 4:** Học kỹ thuật nâng cao + dùng NotebookLM cho công việc chính xác\n\n**Mẹo:** Bấm vào nút **\"Lộ trình học\"** ở góc dưới để xem mind map chi tiết!",
+      '**Lộ trình 4 bước cho người mới:**\n\n1. **Tuần 1:** Hiểu AI là gì, cảnh giác về ảo giác\n2. **Tuần 2:** Học viết câu lệnh theo công thức 5 thành phần\n3. **Tuần 3:** Áp dụng vào 5 việc thường gặp (tóm tắt, báo cáo, kế hoạch...)\n4. **Tuần 4:** Học kỹ thuật nâng cao + dùng NotebookLM cho công việc chính xác\n\n**Mẹo:** Bấm vào nút **"Lộ trình học"** ở góc dưới để xem mind map chi tiết!',
   },
 ];
 
@@ -460,7 +544,11 @@ export const toolDetails = {
         name: "Miễn phí",
         price: "0 đ",
         priceNote: "Có giới hạn",
-        features: ["GPT-5 (giới hạn lượt)", "Hỏi đáp cơ bản", "Tải ảnh để phân tích"],
+        features: [
+          "GPT-5 (giới hạn lượt)",
+          "Hỏi đáp cơ bản",
+          "Tải ảnh để phân tích",
+        ],
         highlight: false,
       },
       {
