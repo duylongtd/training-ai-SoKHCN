@@ -2,7 +2,7 @@
   "name": "tap-huan-ai",
   "private": true,
   "version": "1.0.0",
-  "description": "Website tập huấn AI cho cán bộ xã/phường và nhân dân — Sở KH&CN Hà Tĩnh",
+  "description": "Website tập huấn AI cho cán bộ xã/phường và nhân dân — Trung tâm Khoa Học Công Nghệ Và Chuyển Đổi Số",
   "type": "module",
   "scripts": {
     "dev": "vite",

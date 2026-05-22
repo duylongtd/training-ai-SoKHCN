@@ -1,4 +1,4 @@
-# 🎓 Tập huấn AI · Sở KH&CN Hà Tĩnh
+# 🎓 Tập huấn AI · Trung tâm Khoa Học Công Nghệ Và Chuyển Đổi Số
 
 Website tài liệu tập huấn AI cho cán bộ xã/phường và nhân dân — hướng dẫn sử dụng ChatGPT, Gemini, NotebookLM trong công tác văn phòng.
 

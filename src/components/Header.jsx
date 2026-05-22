@@ -10,7 +10,7 @@ const navItems = [
   { id: "an-toan", label: "An toàn" },
 ];
 
-// Logo Sở KH&CN Hà Tĩnh — ưu tiên file local /logo-skhcn.png (đặt trong public/),
+// Logo Trung tâm Khoa Học Công Nghệ Và Chuyển Đổi Số — ưu tiên file local /logo-skhcn.png (đặt trong public/),
 // fallback sang URL gốc của Sở, fallback cuối cùng là icon Sparkles.
 const LOGO_LOCAL = "/logo-skhcn.png";
 const LOGO_REMOTE = "https://skhcn.hatinh.gov.vn/img/logo1.png";
