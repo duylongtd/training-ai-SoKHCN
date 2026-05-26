@@ -71,7 +71,7 @@ export default function Header({ onOpenMindmap }) {
               Tập huấn AI
             </span>
             <span className="text-[10px] md:text-[11px] text-ink-900/60 uppercase tracking-widest font-medium">
-              TRUNG TÂM KHOA HỌC, CÔNG NGHỆ VÀ CHUYỂN ĐỔI SỐ HÀ TĨNH
+              TRUNG TÂM KHCN & CĐS HÀ TĨNH
             </span>
           </div>
         </a>
