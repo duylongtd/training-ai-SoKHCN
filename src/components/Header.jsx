@@ -13,7 +13,7 @@ const navItems = [
 // Logo Trung tâm Khoa Học Công Nghệ Và Chuyển Đổi Số — ưu tiên file local /logo-skhcn.png (đặt trong public/),
 // fallback sang URL gốc của Sở, fallback cuối cùng là icon Sparkles.
 const LOGO_LOCAL = "/logo-skhcn.png";
-const LOGO_REMOTE = "https://skhcn.hatinh.gov.vn/img/logo1.png";
+const LOGO_REMOTE = "https://hatiaptech.vn/wp-content/uploads/2025/09/Logo-TTKHCNCDS.png";
 
 function BrandLogo() {
   // 0 = local, 1 = remote, 2 = sparkles fallback
@@ -71,7 +71,7 @@ export default function Header({ onOpenMindmap }) {
               Tập huấn AI
             </span>
             <span className="text-[10px] md:text-[11px] text-ink-900/60 uppercase tracking-widest font-medium">
-              Sở KH&amp;CN Hà Tĩnh
+              TRUNG TÂM KHOA HỌC, CÔNG NGHỆ VÀ CHUYỂN ĐỔI SỐ HÀ TĨNH
             </span>
           </div>
         </a>
