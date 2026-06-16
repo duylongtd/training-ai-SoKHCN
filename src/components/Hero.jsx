@@ -28,7 +28,7 @@ export default function Hero({ onOpenMindmap, onOpenChat }) {
             {/* Trigger */}
             <span className="pill transition-transform duration-200 group-hover:scale-[1.03]">
               <span className="w-1.5 h-1.5 rounded-full bg-accent-lime animate-pulse" />
-              <span>Phòng CNTT &amp; CĐS · Anh Lam</span>
+              <span>Phòng CNTT &amp; CĐS · Trần Đình Duy Long</span>
             </span>
 
             {/* ─── PROFILE HOVER CARD ─── */}
